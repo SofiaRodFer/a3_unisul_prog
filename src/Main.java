@@ -1,5 +1,8 @@
+import View.TelaPrincipal;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        TelaPrincipal objetotela = new TelaPrincipal();
+        objetotela.setVisible(true);
     }
 }
