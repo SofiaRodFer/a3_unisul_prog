@@ -35,7 +35,7 @@ public class AlunoDAO {
 
     public Connection getConexao() {
 
-        Connection connection = null;  //instância da conexão
+        Connection connection = null;  //instï¿½ncia da conexï¿½o
 
         try {
 
@@ -43,12 +43,12 @@ public class AlunoDAO {
             String driver = "com.mysql.cj.jdbc.Driver";
             Class.forName(driver);
 
-            // Configurar a conexão
+            // Configurar a conexï¿½o
             String server = "localhost"; //caminho do MySQL
-            String database = "db_alunos";
+            String database = "db_produtos";
             String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";
             String user = "root";
-            String password = "rootpass";
+            String password = "12345";
 
             connection = DriverManager.getConnection(url, user, password);
 
@@ -56,12 +56,12 @@ public class AlunoDAO {
             if (connection != null) {
                 System.out.println("Status: Conectado!");
             } else {
-                System.out.println("Status: NÃO CONECTADO!");
+                System.out.println("Status: Nï¿½O CONECTADO!");
             }
 
             return connection;
 
-        } catch (ClassNotFoundException e) {  //Driver não encontrado
+        } catch (ClassNotFoundException e) {  //Driver nï¿½o encontrado
             System.out.println("O driver nao foi encontrado. " + e.getMessage() );
             return null;
 
@@ -124,7 +124,7 @@ public class AlunoDAO {
 
     }
 
-    // Deleta um aluno específico pelo seu campo ID
+    // Deleta um aluno especï¿½fico pelo seu campo ID
     public boolean DeleteAlunoBD(int id) {
         try {
             Statement stmt = this.getConexao().createStatement();
@@ -137,7 +137,7 @@ public class AlunoDAO {
         return true;
     }
 
-    // Edita um aluno específico pelo seu campo ID
+    // Edita um aluno especï¿½fico pelo seu campo ID
     public boolean UpdateAlunoBD(Aluno objeto) {
 
         String sql = "UPDATE tb_alunos set nome = ? ,idade = ? ,curso = ? ,fase = ? WHERE id = ?";
