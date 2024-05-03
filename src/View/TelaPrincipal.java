@@ -5,6 +5,10 @@
  */
 package View;
 
+import DAO.UsuarioDAO;
+import Model.Usuario;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ricas
@@ -15,10 +19,38 @@ public class TelaPrincipal extends javax.swing.JFrame {
      * Creates new form TelaPrincipal
      */
     
-    GerenciaAluno objeto = new GerenciaAluno();
+    private Usuario usuarioLogado; // Variável para armazenar o usuário logado
     
-    public TelaPrincipal() {
+    public TelaPrincipal(Usuario usuario) {
+        usuarioLogado = usuario;
         initComponents();
+        bemvindo.setText("Bem-vindo, " + usuarioLogado.getNome()); // Define o texto de boas-vindas
+        
+        if ("admin".equals(usuarioLogado.getPermissao())) {
+            btnGerenciarUsuarios.setEnabled(true);
+            btnGerenciarUsuarios.setVisible(true);
+            
+            btnAdicionarUsuario.setEnabled(true);
+            btnAdicionarUsuario.setVisible(true);
+            
+            labelUsuario.setEnabled(true);
+            labelUsuario.setVisible(true);
+
+            btnAdicionarProduto.setEnabled(true);
+            btnAdicionarProduto.setVisible(true);
+        } else {
+            btnGerenciarUsuarios.setEnabled(false);
+            btnGerenciarUsuarios.setVisible(false);
+            
+            btnAdicionarUsuario.setEnabled(false);
+            btnAdicionarUsuario.setVisible(false);
+            
+            labelUsuario.setEnabled(false);
+            labelUsuario.setVisible(false);
+
+            btnAdicionarProduto.setEnabled(false);
+            btnAdicionarProduto.setVisible(false);
+        }
     }
 
     /**
@@ -30,6 +62,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        bemvindo = new javax.swing.JLabel();
+        btnVerEstoque = new javax.swing.JButton();
+        btnAdicionarProduto = new javax.swing.JButton();
+        btnProdutosEmFalta = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        labelUsuario = new javax.swing.JLabel();
+        btnGerenciarUsuarios = new javax.swing.JButton();
+        btnAdicionarUsuario = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -39,6 +79,54 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Interface de Teste");
+
+        bemvindo.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        bemvindo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+
+        btnVerEstoque.setText("Ver Estoque");
+        btnVerEstoque.setMaximumSize(new java.awt.Dimension(93, 23));
+        btnVerEstoque.setPreferredSize(new java.awt.Dimension(93, 23));
+
+        btnAdicionarProduto.setText("Adicionar Produto");
+        btnAdicionarProduto.setEnabled(false);
+        btnAdicionarProduto.setPreferredSize(new java.awt.Dimension(93, 23));
+        btnAdicionarProduto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarProdutoActionPerformed(evt);
+            }
+        });
+
+        btnProdutosEmFalta.setText("Ver Produtos em Falta");
+        btnProdutosEmFalta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnProdutosEmFaltaActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Produtos");
+
+        labelUsuario.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
+        labelUsuario.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelUsuario.setText("Usuarios");
+
+        btnGerenciarUsuarios.setText("Gerenciar Usuários");
+        btnGerenciarUsuarios.setEnabled(false);
+        btnGerenciarUsuarios.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGerenciarUsuariosActionPerformed(evt);
+            }
+        });
+
+        btnAdicionarUsuario.setText("Adicionar Usuário");
+        btnAdicionarUsuario.setEnabled(false);
+        btnAdicionarUsuario.setPreferredSize(new java.awt.Dimension(93, 23));
+        btnAdicionarUsuario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarUsuarioActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("Arquivo");
 
@@ -77,11 +165,42 @@ public class TelaPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 710, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(195, 195, 195)
+                .addComponent(bemvindo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(195, 195, 195))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(258, 258, 258)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnVerEstoque, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnProdutosEmFalta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnGerenciarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAdicionarProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(labelUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnAdicionarUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(264, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 496, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addComponent(bemvindo, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(btnVerEstoque, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btnProdutosEmFalta)
+                .addGap(18, 18, 18)
+                .addComponent(btnAdicionarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(labelUsuario)
+                .addGap(18, 18, 18)
+                .addComponent(btnGerenciarUsuarios)
+                .addGap(18, 18, 18)
+                .addComponent(btnAdicionarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(120, Short.MAX_VALUE))
         );
 
         pack();
@@ -89,9 +208,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
-        CadastroAluno objeto = new CadastroAluno();
-        objeto.setVisible(true);
+         // Verificar se o usuário está logado
+        if (usuarioLogado != null && "admin".equals(usuarioLogado.getPermissao())) {
+            // Se estiver logado, abrir a tela de cadastro de aluno
+            CadastroAluno objeto = new CadastroAluno();
+            objeto.setVisible(true);
+        } else {
+            // Se não estiver logado, exibir uma mensagem de erro
+            JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -100,53 +225,65 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-//        GerenciaAluno objeto = new GerenciaAluno();
-
-        objeto.setVisible(true);
-        objeto.carregaTabela();
+//        // Verificar se o usuário está logado
+        if (usuarioLogado != null && "admin".equals(usuarioLogado.getPermissao())) {
+            // Se estiver logado, abrir a tela de gerenciamento de alunos
+            GerenciaAluno objeto = new GerenciaAluno();
+            objeto.setVisible(true);
+            objeto.carregaTabela();
+        } else {
+            // Se não estiver logado, exibir uma mensagem de erro
+            JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(TelaPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnAdicionarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarProdutoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAdicionarProdutoActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new TelaPrincipal().setVisible(true);
-            }
-        });
-    }
+    private void btnProdutosEmFaltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosEmFaltaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnProdutosEmFaltaActionPerformed
+
+    private void btnGerenciarUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerenciarUsuariosActionPerformed
+        if (usuarioLogado != null && "admin".equals(usuarioLogado.getPermissao())) {
+            // Se estiver logado, abrir a tela de gerenciamento de alunos
+            GerenciaUsuario objeto = new GerenciaUsuario();
+            objeto.setVisible(true);
+            objeto.carregaTabela();
+        } else {
+            // Se não estiver logado, exibir uma mensagem de erro
+            JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnGerenciarUsuariosActionPerformed
+
+    private void btnAdicionarUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarUsuarioActionPerformed
+        if (usuarioLogado != null && "admin".equals(usuarioLogado.getPermissao())) {
+            // Se estiver logado, abrir a tela de gerenciamento de alunos
+            CadastroUsuario objeto = new CadastroUsuario();
+            objeto.setVisible(true);
+        } else {
+            // Se não estiver logado, exibir uma mensagem de erro
+            JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAdicionarUsuarioActionPerformed
+
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel bemvindo;
+    private javax.swing.JButton btnAdicionarProduto;
+    private javax.swing.JButton btnAdicionarUsuario;
+    private javax.swing.JButton btnGerenciarUsuarios;
+    private javax.swing.JButton btnProdutosEmFalta;
+    private javax.swing.JButton btnVerEstoque;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JLabel labelUsuario;
     // End of variables declaration//GEN-END:variables
 }
