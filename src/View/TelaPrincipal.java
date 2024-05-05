@@ -5,7 +5,6 @@
  */
 package View;
 
-import DAO.UsuarioDAO;
 import Model.Usuario;
 import javax.swing.JOptionPane;
 
@@ -19,7 +18,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
      * Creates new form TelaPrincipal
      */
     
-    private Usuario usuarioLogado; // Variável para armazenar o usuário logado
+    private final Usuario usuarioLogado; // Variável para armazenar o usuário logado
     
     public TelaPrincipal(Usuario usuario) {
         usuarioLogado = usuario;
@@ -71,11 +70,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnGerenciarUsuarios = new javax.swing.JButton();
         btnAdicionarUsuario = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Interface de Teste");
@@ -127,48 +121,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 btnAdicionarUsuarioActionPerformed(evt);
             }
         });
-
-        jMenu1.setText("Arquivo");
-
-        jMenuItem1.setText("Novo Aluno");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem1);
-
-        jMenuItem2.setText("Gerenciar Alunos");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem2);
-
-        jMenuItem3.setText("Sair");
-        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem3ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem3);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Sobre");
-        jMenuBar1.add(jMenu2);
-
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(195, 195, 195)
-                .addComponent(bemvindo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(195, 195, 195))
             .addGroup(layout.createSequentialGroup()
                 .addGap(260, 260, 260)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -180,6 +138,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
                     .addComponent(labelUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnAdicionarUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(258, Short.MAX_VALUE))
+            .addComponent(bemvindo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -200,42 +159,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addComponent(btnGerenciarUsuarios)
                 .addGap(18, 18, 18)
                 .addComponent(btnAdicionarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(120, Short.MAX_VALUE))
+                .addContainerGap(142, Short.MAX_VALUE))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-         // Verificar se o usuário está logado
-        if (usuarioLogado != null && "admin".equals(usuarioLogado.getPermissao())) {
-            // Se estiver logado, abrir a tela de cadastro de aluno
-            CadastroAluno objeto = new CadastroAluno();
-            objeto.setVisible(true);
-        } else {
-            // Se não estiver logado, exibir uma mensagem de erro
-            JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-        // TODO add your handling code here:
-        System.exit(0);
-    }//GEN-LAST:event_jMenuItem3ActionPerformed
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-//        // Verificar se o usuário está logado
-        if (usuarioLogado != null && "admin".equals(usuarioLogado.getPermissao())) {
-            // Se estiver logado, abrir a tela de gerenciamento de alunos
-            GerenciaAluno objeto = new GerenciaAluno();
-            objeto.setVisible(true);
-            objeto.carregaTabela();
-        } else {
-            // Se não estiver logado, exibir uma mensagem de erro
-            JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
-        }
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void btnAdicionarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarProdutoActionPerformed
         // TODO add your handling code here:
@@ -278,12 +207,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnProdutosEmFalta;
     private javax.swing.JButton btnVerEstoque;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JLabel labelUsuario;
     // End of variables declaration//GEN-END:variables
 }
