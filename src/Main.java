@@ -1,8 +1,8 @@
-import View.TelaPrincipal;
+import View.Login;
 
 public class Main {
     public static void main(String[] args) {
-        TelaPrincipal objetotela = new TelaPrincipal();
+        Login objetotela = new Login();
         objetotela.setVisible(true);
     }
 }
