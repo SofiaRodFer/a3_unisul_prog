@@ -81,12 +81,7 @@ public class Usuario {
                 + "\n Data de Cadastro: " + this.data_cadastro
                 + "\n -----------";
     }
-
-    public boolean inserirUsuarioBD(String nome, String permissao, String email, Date data_cadastro, String senha) throws SQLException {
-        Usuario objeto = new Usuario(dao.maiorID(), nome, permissao, email, data_cadastro, senha);
-        return dao.inserirUsuarioBD(objeto);
-    }
-
+    
     public boolean DeleteUsuario(int id) {
         dao.deleteUsuarioBD(id);
         return true;
