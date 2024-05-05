@@ -221,6 +221,10 @@ public class GerenciaUsuario extends javax.swing.JFrame {
             }
 
             if (this.jTableUsuarios.getSelectedRow() == -1) {
+                this.c_nome.setText("");
+                this.c_email.setText("");
+                this.c_permissao.setSelectedIndex(0);
+                this.c_senha.setText("");
                 throw new Exception("Primeiro selecione um usuário para alterar.");
             } else {
                 id = Integer.parseInt(this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 0).toString());
