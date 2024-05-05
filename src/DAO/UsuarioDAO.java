@@ -45,11 +45,11 @@ public class UsuarioDAO {
             Class.forName(driver);
 
             // Configurar a conex�o
-            String server = "localhost"; //caminho do MySQL
+            String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com"; //caminho do MySQL
             String database = "db_produtos";
-            String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";
-            String user = "root";
-            String password = "12345";
+            String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTime3306zone=true&serverTimezone=UTC";
+            String user = "admin";
+            String password = "adminadmin";
 
             connection = DriverManager.getConnection(url, user, password);
 
