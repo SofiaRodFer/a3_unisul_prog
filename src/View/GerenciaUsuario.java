@@ -2,8 +2,8 @@ package View;
 
 import DAO.UsuarioDAO;
 import Model.Usuario;
+import Result.Resultado;
 import java.util.ArrayList;
-import java.util.Date;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -227,13 +227,14 @@ public class GerenciaUsuario extends javax.swing.JFrame {
             }
             
             Usuario usuario = new Usuario(this.usuarioDAO.getID(nomeAntigo), nome, permissao, email, null, senha);
-            if (this.usuarioDAO.updateUsuarioBD(usuario)) {
+            Resultado resultado = this.usuarioDAO.updateUsuarioBD(usuario);
+            if (resultado.isSucesso()) {
                 this.c_nome.setText("");
                 this.c_email.setText("");
                 this.c_permissao.setSelectedIndex(0);
                 this.c_senha.setText("");
-                JOptionPane.showMessageDialog(rootPane, "Usuário alterado com sucesso!");
-            }
+            } 
+            JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         } finally {
@@ -246,14 +247,14 @@ public class GerenciaUsuario extends javax.swing.JFrame {
         if (this.jTableUsuarios.getSelectedRow() != -1) {
 
             String nome = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 1).toString();
-            String idade = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 2).toString();
-            String curso = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 3).toString();
-            String fase = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 4).toString();
+            String email = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 2).toString();
+            String permissao = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 3).toString();
+            String senha = usuarioDAO.obterSenha((int) this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 0));
 
             this.c_nome.setText(nome);
-            this.c_email.setText(idade);
-            this.c_permissao.setSelectedItem(curso);
-            this.c_senha.setText(fase);
+            this.c_email.setText(email);
+            this.c_permissao.setSelectedItem(permissao);
+            this.c_senha.setText(senha);
             
             nomeAntigo = this.c_nome.getText();
 
@@ -272,13 +273,14 @@ public class GerenciaUsuario extends javax.swing.JFrame {
             int resposta_usuario = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este usuário?");
 
             if (resposta_usuario == 0) {
-                if (this.usuarioDAO.deleteUsuarioBD(id)) {
+                Resultado resultado = this.usuarioDAO.deleteUsuarioBD(id);
+                if (resultado.isSucesso()) {
                     this.c_nome.setText("");
                     this.c_email.setText("");
                     this.c_permissao.setSelectedIndex(0);
                     this.c_senha.setText("");
-                    JOptionPane.showMessageDialog(rootPane, "Usuário apagado com sucesso!");
                 }
+                JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
             }
 
         } catch (Exception e) {

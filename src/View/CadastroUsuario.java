@@ -2,6 +2,7 @@ package View;
 
 import DAO.UsuarioDAO;
 import Model.Usuario;
+import Result.Resultado;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -175,10 +176,11 @@ public class CadastroUsuario extends javax.swing.JFrame {
 
             // Criando um novo usuário
             Usuario novoUsuario = new Usuario(usuarioDAO.maiorID(), nome, permissao, email, new Date(), senha);
+            
+            Resultado resultado = usuarioDAO.inserirUsuarioBD(novoUsuario);
 
             // Inserindo o novo usuário no banco de dados
-            if (usuarioDAO.inserirUsuarioBD(novoUsuario)) {
-                JOptionPane.showMessageDialog(rootPane, "Usuário cadastrado com sucesso!");
+            if (resultado.isSucesso()) {
 
                 // Limpa campos da interface
                 this.c_nome.setText("");
@@ -187,9 +189,8 @@ public class CadastroUsuario extends javax.swing.JFrame {
                 this.c_senha.setText("");
 
             }
-
-            // Exibindo a lista de usuários cadastrados (opcional)
-            System.out.println(usuarioDAO.getMinhaLista().toString());
+            
+            JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
 
         } catch (Mensagens erro) {
             JOptionPane.showMessageDialog(null, erro.getMessage());
