@@ -203,9 +203,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarUsuarioActionPerformed
 
     private void btnVerEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerEstoqueActionPerformed
-        GerenciaProduto objeto = new GerenciaProduto();
-        objeto.setVisible(true);
-        objeto.carregaTabela();
+        GerenciaProduto produto = new GerenciaProduto();
+        produto.setVisible(true);
+        produto.carregaTabela();
     }//GEN-LAST:event_btnVerEstoqueActionPerformed
 
     

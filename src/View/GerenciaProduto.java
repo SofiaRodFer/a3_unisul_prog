@@ -171,6 +171,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 produto.getCategoria_produto()
             });
         }
+        
     }
     
     /**

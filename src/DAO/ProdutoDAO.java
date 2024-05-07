@@ -87,29 +87,34 @@ public class ProdutoDAO {
     public ArrayList getMinhaLista() {
 
         MinhaLista.clear(); 
+        Statement stmt = null;
 
         try {
-            Statement stmt = this.getConexao().createStatement();
+            stmt = this.getConexao().createStatement();
             ResultSet res = stmt.executeQuery("SELECT * FROM produtos");
             while (res.next()) {
-                int codigo_produto = res.getInt("codigo_produto");
-                String nome_produto = res.getString("nome_produto");
-                String descricao_produto = res.getString("descricao_produto");
-                String categoria_produto = res.getString("categoria_produto");
-                int quantidade_estoque = res.getInt("quantidade_produto");
-                double preco = res.getDouble("preco");
-                String data_cadastro= res.getString("data_cadastro");
-
-                Produto objeto = new Produto(codigo_produto, nome_produto, descricao_produto, categoria_produto, quantidade_estoque, preco, data_cadastro );
-
-
-
-                MinhaLista.add(objeto);
+                Produto produto = new Produto(
+                    res.getInt("codigo_produto"),
+                    res.getString("nome_produto"),
+                    res.getString("descricao_produto"),
+                    res.getString("categoria"),
+                    res.getInt("quantidade_estoque"),
+                    res.getDouble("preco"),
+                    res.getString("data_cadastro")
+                );
+                MinhaLista.add(produto);
             }
 
-            stmt.close();
-
         } catch (SQLException ex) {
+            System.out.println("Erro ao obter lista: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
         }
 
         return MinhaLista;
