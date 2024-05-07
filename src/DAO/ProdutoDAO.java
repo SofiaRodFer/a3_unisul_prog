@@ -96,7 +96,7 @@ public class ProdutoDAO {
                 String descricao_produto = res.getString("descricao_produto");
                 String categoria_produto = res.getString("categoria_produto");
                 int quantidade_estoque = res.getInt("quantidade_produto");
-                double preco = res.getDouble("preço");
+                double preco = res.getDouble("preco");
                 String data_cadastro= res.getString("data_cadastro");
 
                 Produto objeto = new Produto(codigo_produto, nome_produto, descricao_produto, categoria_produto, quantidade_estoque, preco, data_cadastro );
