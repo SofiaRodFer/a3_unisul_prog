@@ -184,7 +184,6 @@ public class UsuarioDAO {
 
         return sucesso;
     }
-
     
     public ArrayList getMinhaLista() {
         
@@ -257,7 +256,7 @@ public class UsuarioDAO {
             if (sucesso) {
                 return new Resultado(true, "Usuário deletado com sucesso.");
             } else {
-                return new Resultado(false, "Erro ao deeltar usuário.");
+                return new Resultado(false, "Erro ao deletar usuário.");
             }
         }
     }

@@ -5,6 +5,7 @@
 package DAO;
 
 import Model.Produto;
+import Result.Resultado;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -86,29 +87,34 @@ public class ProdutoDAO {
     public ArrayList getMinhaLista() {
 
         MinhaLista.clear(); 
+        Statement stmt = null;
 
         try {
-            Statement stmt = this.getConexao().createStatement();
+            stmt = this.getConexao().createStatement();
             ResultSet res = stmt.executeQuery("SELECT * FROM produtos");
             while (res.next()) {
-                int codigo_produto = res.getInt("codigo_produto");
-                String nome_produto = res.getString("nome_produto");
-                String descricao_produto = res.getString("descricao_produto");
-                String categoria_produto = res.getString("categoria_produto");
-                int quantidade_estoque = res.getInt("quantidade_produto");
-                double preco = res.getDouble("preço");
-                String data_cadastro= res.getString("data_cadastro");
-
-                Produto objeto = new Produto(codigo_produto, nome_produto, descricao_produto, categoria_produto, quantidade_estoque, preco, data_cadastro );
-
-
-
-                MinhaLista.add(objeto);
+                Produto produto = new Produto(
+                    res.getInt("codigo_produto"),
+                    res.getString("nome_produto"),
+                    res.getString("descricao_produto"),
+                    res.getString("categoria"),
+                    res.getInt("quantidade_estoque"),
+                    res.getDouble("preco"),
+                    res.getString("data_cadastro")
+                );
+                MinhaLista.add(produto);
             }
 
-            stmt.close();
-
         } catch (SQLException ex) {
+            System.out.println("Erro ao obter lista: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
         }
 
         return MinhaLista;
@@ -140,16 +146,30 @@ public class ProdutoDAO {
 
     }
 
-    public boolean DeleteProdutoDB(int codigo_produto) {
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            stmt.executeUpdate("DELETE FROM produtos WHERE codigo_produto = " + codigo_produto);
-            stmt.close();            
-
+    public Resultado DeleteProdutoDB(int codigo_produto) {
+        String sql = "DELETE FROM produtos WHERE codigo_produto = ?";
+        PreparedStatement stmt = null;
+        boolean sucesso = false;
+        try (Connection con = getConexao();) {
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, codigo_produto);
+            sucesso = stmt.executeUpdate() > 0;
         } catch (SQLException erro) {
+            return new Resultado(false, "Erro ao deletar produto. Erro: " + erro.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+            if (sucesso) {
+                return new Resultado(true, "Produto deletado com sucesso.");
+            } else {
+                return new Resultado(false, "Erro ao deletar produto.");
+            }
         }
-
-        return true;
     }
 
     public boolean UpdateProdutoDB(Produto objeto) {

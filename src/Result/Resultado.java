@@ -9,8 +9,8 @@ package Result;
  * @author pedro
  */
 public class Resultado {
-    private boolean sucesso;
-    private String mensagem;
+    private final boolean sucesso;
+    private final String mensagem;
 
     public Resultado(boolean sucesso, String mensagem) {
         this.sucesso = sucesso;

@@ -3,6 +3,7 @@ package View;
 import DAO.UsuarioDAO;
 import Model.Usuario;
 import Result.Resultado;
+import View.Mensagens;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
