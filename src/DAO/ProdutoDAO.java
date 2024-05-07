@@ -5,6 +5,7 @@
 package DAO;
 
 import Model.Produto;
+import Result.Resultado;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -140,16 +141,30 @@ public class ProdutoDAO {
 
     }
 
-    public boolean DeleteProdutoDB(int codigo_produto) {
-        try {
-            Statement stmt = this.getConexao().createStatement();
-            stmt.executeUpdate("DELETE FROM produtos WHERE codigo_produto = " + codigo_produto);
-            stmt.close();            
-
+    public Resultado DeleteProdutoDB(int codigo_produto) {
+        String sql = "DELETE FROM produtos WHERE codigo_produto = ?";
+        PreparedStatement stmt = null;
+        boolean sucesso = false;
+        try (Connection con = getConexao();) {
+            stmt = con.prepareStatement(sql);
+            stmt.setInt(1, codigo_produto);
+            sucesso = stmt.executeUpdate() > 0;
         } catch (SQLException erro) {
+            return new Resultado(false, "Erro ao deletar produto. Erro: " + erro.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+            if (sucesso) {
+                return new Resultado(true, "Produto deletado com sucesso.");
+            } else {
+                return new Resultado(false, "Erro ao deletar produto.");
+            }
         }
-
-        return true;
     }
 
     public boolean UpdateProdutoDB(Produto objeto) {

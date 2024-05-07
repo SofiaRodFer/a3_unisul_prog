@@ -80,6 +80,11 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnVerEstoque.setText("Ver Estoque");
         btnVerEstoque.setMaximumSize(new java.awt.Dimension(93, 23));
         btnVerEstoque.setPreferredSize(new java.awt.Dimension(93, 23));
+        btnVerEstoque.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerEstoqueActionPerformed(evt);
+            }
+        });
 
         btnAdicionarProduto.setText("Adicionar Produto");
         btnAdicionarProduto.setEnabled(false);
@@ -196,6 +201,12 @@ public class TelaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Permissão insuficiente.", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btnAdicionarUsuarioActionPerformed
+
+    private void btnVerEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerEstoqueActionPerformed
+        GerenciaProduto objeto = new GerenciaProduto();
+        objeto.setVisible(true);
+        objeto.carregaTabela();
+    }//GEN-LAST:event_btnVerEstoqueActionPerformed
 
     
 

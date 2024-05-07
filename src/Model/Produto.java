@@ -15,7 +15,6 @@ import java.sql.SQLException;
  */
 public class Produto {
 
-
     private int codigo_produto;
     private String nome_produto;
     private String descricao_produto;
