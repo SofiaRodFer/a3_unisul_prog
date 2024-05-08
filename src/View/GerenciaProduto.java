@@ -41,8 +41,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jTableProdutos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Gerenciamento de Produtos");
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setPreferredSize(new java.awt.Dimension(634, 429));
 
         b_visualizar.setText("Visualizar");
         b_visualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -113,11 +112,10 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_visualizar)
                     .addComponent(b_apagar))
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
-        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_visualizarActionPerformed
@@ -168,13 +166,11 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 produto.getCodigo_produto(),
                 produto.getNome_produto(),
                 produto.getDescricao_produto(),
-                produto.getQuantidade_estoque(),
                 produto.getPreco(),
                 produto.getData_cadastro(),
                 produto.getCategoria_produto()
             });
         }
-        
     }
     
     /**

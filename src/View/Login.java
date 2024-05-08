@@ -44,6 +44,14 @@ public class Login extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Estoque Null Alliance");
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                formKeyReleased(evt);
+            }
+        });
 
         email.setToolTipText("");
         email.addActionListener(new java.awt.event.ActionListener() {
@@ -68,6 +76,12 @@ public class Login extends javax.swing.JFrame {
 
         jLabel3.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel3.setText("Email");
+
+        senha.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                senhaKeyReleased(evt);
+            }
+        });
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -108,8 +122,6 @@ public class Login extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        getAccessibleContext().setAccessibleName("Estoque Null Alliance");
-
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
@@ -147,6 +159,20 @@ public class Login extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Por favor, insira seu email e senha.");
         }
     }//GEN-LAST:event_entrarActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+
+    }//GEN-LAST:event_formKeyPressed
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyReleased
+
+    }//GEN-LAST:event_formKeyReleased
+
+    private void senhaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_senhaKeyReleased
+        if(evt.getKeyCode() == 10) {
+            entrar.doClick();
+        }
+    }//GEN-LAST:event_senhaKeyReleased
 
     /**
      * @param args the command line arguments
