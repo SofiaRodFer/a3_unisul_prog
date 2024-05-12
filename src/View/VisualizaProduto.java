@@ -7,7 +7,6 @@ package View;
 import DAO.ProdutoDAO;
 import Model.Produto;
 import Result.Resultado;
-import java.text.DecimalFormat;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,7 +17,6 @@ public class VisualizaProduto extends javax.swing.JFrame {
     
     private Produto produtoSelecionado;
     private final ProdutoDAO dao;
-    private static final DecimalFormat decfor = new DecimalFormat("0.00");  
 
     /**
      * Creates new form VisualizaProduto
