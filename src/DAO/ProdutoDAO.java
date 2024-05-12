@@ -56,7 +56,7 @@ public class ProdutoDAO {
             Class.forName(driver);
 
 
-//             Configurar a conex�o
+            // Configurar a conex�o
             String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com"; //caminho do MySQL
             String database = "db_produtos";
             String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";

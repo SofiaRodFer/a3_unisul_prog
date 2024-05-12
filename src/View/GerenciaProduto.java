@@ -126,6 +126,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
             new VisualizaProduto(produtoSelecionado).setVisible(true);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+        } finally {
+            this.dispose();
         }
     }//GEN-LAST:event_b_visualizarActionPerformed
 

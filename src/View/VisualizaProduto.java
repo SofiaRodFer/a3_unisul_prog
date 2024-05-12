@@ -215,26 +215,21 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_b_alterarActionPerformed
 
     private void b_apagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_apagarActionPerformed
-//        try {
-//            int id = 0;
-//            if (this.jTableProdutos.getSelectedRow() == -1) {
-//                throw new Exception("Primeiro selecione um produto para apagar.");
-//            } else {
-//                id = Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString());
-//            }
-//
-//            int resposta_produto = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
-//
-//            if (resposta_produto == 0) {
-//                Resultado resultado = this.produtoDAO.DeleteProdutoDB(id);
-//                JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
-//            }
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, e.getMessage());
-//        } finally {
-//            carregaTabela();
-//        }
+        try {
+            int id = this.produtoSelecionado.getCodigo_produto();
+
+            int resposta_usuario = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
+
+            if (resposta_usuario == 0) {
+                Resultado resultado = this.dao.DeleteProdutoDB(id);
+                JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        } finally {
+            this.dispose();
+        }
     }//GEN-LAST:event_b_apagarActionPerformed
 
     private void b_salvarAlteracaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_salvarAlteracaoActionPerformed
@@ -303,7 +298,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_b_cancelarAlteracaoActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-
+        new GerenciaProduto().setVisible(true);
     }//GEN-LAST:event_formWindowClosed
 
     private void preencherDados() {
