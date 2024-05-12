@@ -56,7 +56,7 @@ public class ProdutoDAO {
             Class.forName(driver);
 
 
-            // Configurar a conex�o
+//             Configurar a conex�o
             String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com"; //caminho do MySQL
             String database = "db_produtos";
             String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";
@@ -172,28 +172,36 @@ public class ProdutoDAO {
         }
     }
 
-    public boolean UpdateProdutoDB(Produto objeto) {
-
-        String sql = "UPDATE produto set codigo_produto = ? , nome_produto = ?, descricao_produto = ?, categoria_produto = ?, quantidade_estoque = ?, preco = ?, data_cadastro = ?) VALUES(?,?,?,?,?)";
-
-        try {
-            PreparedStatement stmt = this.getConexao().prepareStatement(sql);
-
-            stmt.setInt(1, objeto.getCodigo_produto());
-            stmt.setString(2, objeto.getNome_produto());
-            stmt.setString(3, objeto.getDescricao_produto());
-            stmt.setString(4, objeto.getCategoria_produto());
-            stmt.setInt(5, objeto.getQuantidade_estoque());
-            stmt.setDouble(6, objeto.getPreco());
-            stmt.setString(7, objeto.getData_cadastro());
-
-            stmt.execute();
-            stmt.close();
-
-            return true;
-
-        } catch (SQLException erro) {
-            throw new RuntimeException(erro);
+    public Resultado UpdateProdutoDB(Produto produto) {
+        String sql = "UPDATE produtos SET nome_produto = ?, descricao_produto = ?, categoria = ?, quantidade_estoque = ?, preco = ? WHERE codigo_produto = ?";
+        PreparedStatement stmt = null;
+        boolean sucesso = false;
+        
+        try (Connection con = getConexao();) {
+            stmt = con.prepareStatement(sql);
+            stmt.setString(1, produto.getNome_produto());
+            stmt.setString(2, produto.getDescricao_produto());
+            stmt.setString(3, produto.getCategoria_produto());
+            stmt.setInt(4, produto.getQuantidade_estoque());
+            stmt.setDouble(5, produto.getPreco());
+            stmt.setInt(6, produto.getCodigo_produto());
+            
+            sucesso = stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            return new Resultado(false, "Erro ao atualizar produto. Erro: " + e.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+            if (sucesso) {
+                return new Resultado(true, "Produto atualizado com sucesso.");
+            } else {
+                return new Resultado(false, "Erro ao atualizar produto.");
+            }
         }
 
     }

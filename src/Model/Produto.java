@@ -97,7 +97,7 @@ public class Produto {
 
     @Override
     public String toString() {
-        return "\n Código do prodduto: " + this.getCodigo_produto()
+        return "\n Código do produto: " + this.getCodigo_produto()
                 +"\n Nome do produto: " + this.getNome_produto()
                 +"\n Descrição do produto: " + this.getDescricao_produto()
                 +"\n Categoria do produto:" + this.getCategoria_produto()

@@ -24,6 +24,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         initComponents();
         this.produtoDAO = new ProdutoDAO();
         this.carregaTabela();
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -177,12 +178,12 @@ public class GerenciaProduto extends javax.swing.JFrame {
     
     private Produto pegarDadosProdutoSelecionado() {
         return new Produto(
-            Integer.valueOf(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString()), //cod
+            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString()), //cod
             this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 1).toString(), //nm
             this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 2).toString(), //des
-                this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 5).toString(),//cat
-            Integer.valueOf(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 3).toString()), //qnt
-            Double.valueOf(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 4).toString()), //pre
+            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 5).toString(),//cat
+            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 3).toString()), //qnt
+            Double.parseDouble(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 4).toString()), //pre
             this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 6).toString()//dat
         );
     }
