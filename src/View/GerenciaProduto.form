@@ -64,6 +64,7 @@
     <Component class="javax.swing.JButton" name="b_apagar">
       <Properties>
         <Property name="text" type="java.lang.String" value="Apagar"/>
+        <Property name="enabled" type="boolean" value="false"/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="b_apagarActionPerformed"/>

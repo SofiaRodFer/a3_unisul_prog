@@ -17,16 +17,19 @@ public class VisualizaProduto extends javax.swing.JFrame {
     
     private Produto produtoSelecionado;
     private final ProdutoDAO dao;
+    private final boolean possuiAdmin;
 
     /**
      * Creates new form VisualizaProduto
      * @param produto
+     * @param possuiAdmin
      */
-    public VisualizaProduto(Produto produto) {
+    public VisualizaProduto(Produto produto, boolean possuiAdmin) {
         System.out.println(produto);
         this.dao = new ProdutoDAO();
         initComponents();
         this.produtoSelecionado = produto;
+        this.possuiAdmin = possuiAdmin;
         this.iniciarCampos();
         this.preencherDados();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -132,6 +135,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
         getContentPane().add(jDataProduto, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 320, -1, -1));
 
         b_alterar.setText("Alterar");
+        b_alterar.setEnabled(false);
         b_alterar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_alterarActionPerformed(evt);
@@ -148,6 +152,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
         getContentPane().add(b_salvarAlteracao, new org.netbeans.lib.awtextra.AbsoluteConstraints(305, 383, -1, -1));
 
         b_apagar.setText("Apagar");
+        b_apagar.setEnabled(false);
         b_apagar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_apagarActionPerformed(evt);
@@ -298,7 +303,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_b_cancelarAlteracaoActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        new GerenciaProduto().setVisible(true);
+        new GerenciaProduto(possuiAdmin).setVisible(true);
     }//GEN-LAST:event_formWindowClosed
 
     private void preencherDados() {
@@ -351,6 +356,9 @@ public class VisualizaProduto extends javax.swing.JFrame {
         this.jCategoriaEdita.setVisible(false);
         this.jPrecoEdita.setVisible(false);
         this.jNomeEdita.setVisible(false);
+        
+        this.b_alterar.setEnabled(possuiAdmin);
+        this.b_apagar.setEnabled(possuiAdmin);
     }
     
     private Double calcularValorEstoque() {

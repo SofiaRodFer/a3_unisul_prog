@@ -19,12 +19,14 @@ public class GerenciaProduto extends javax.swing.JFrame {
 
     private final ProdutoDAO produtoDAO;
     private ArrayList<Produto> listaProdutos;
+    private boolean possuiAdmin;
     
-    public GerenciaProduto() {
+    public GerenciaProduto(boolean possuiAdmin) {
         initComponents();
         this.produtoDAO = new ProdutoDAO();
         this.carregaTabela();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.possuiAdmin = possuiAdmin;
     }
 
     /**
@@ -51,6 +53,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         });
 
         b_apagar.setText("Apagar");
+        b_apagar.setEnabled(false);
         b_apagar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_apagarActionPerformed(evt);
@@ -121,9 +124,12 @@ public class GerenciaProduto extends javax.swing.JFrame {
     private void b_visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_visualizarActionPerformed
 
         try {
-            Produto produtoSelecionado = pegarDadosProdutoSelecionado();
-            System.out.println(produtoSelecionado);
-            new VisualizaProduto(produtoSelecionado).setVisible(true);
+            if (this.jTableProdutos.getSelectedRow() == -1) {
+                throw new Exception("Primeiro selecione um produto para visualizar.");
+            } else {
+                Produto produtoSelecionado = pegarDadosProdutoSelecionado();
+                new VisualizaProduto(produtoSelecionado, possuiAdmin).setVisible(true);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         } finally {
@@ -176,6 +182,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 produto.getData_cadastro()
             });
         }
+        
+        this.b_apagar.setEnabled(possuiAdmin);
     }
     
     private Produto pegarDadosProdutoSelecionado() {
@@ -188,41 +196,6 @@ public class GerenciaProduto extends javax.swing.JFrame {
             Double.parseDouble(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 4).toString()), //pre
             this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 6).toString()//dat
         );
-    }
-    
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GerenciaProduto().setVisible(true);
-            }
-        });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
