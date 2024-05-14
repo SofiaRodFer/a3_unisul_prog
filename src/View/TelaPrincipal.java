@@ -203,12 +203,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarUsuarioActionPerformed
 
     private void btnVerEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerEstoqueActionPerformed
-        GerenciaProduto produto = new GerenciaProduto();
+        GerenciaProduto produto = new GerenciaProduto(possuiAdmin());
         produto.setVisible(true);
         produto.carregaTabela();
     }//GEN-LAST:event_btnVerEstoqueActionPerformed
 
-    
+    private boolean possuiAdmin() {
+        return this.usuarioLogado.getPermissao().equals("admin");
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel bemvindo;

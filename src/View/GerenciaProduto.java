@@ -19,11 +19,14 @@ public class GerenciaProduto extends javax.swing.JFrame {
 
     private final ProdutoDAO produtoDAO;
     private ArrayList<Produto> listaProdutos;
+    private boolean possuiAdmin;
     
-    public GerenciaProduto() {
+    public GerenciaProduto(boolean possuiAdmin) {
         initComponents();
         this.produtoDAO = new ProdutoDAO();
         this.carregaTabela();
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.possuiAdmin = possuiAdmin;
     }
 
     /**
@@ -41,7 +44,6 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jTableProdutos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(634, 429));
 
         b_visualizar.setText("Visualizar");
         b_visualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -51,6 +53,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         });
 
         b_apagar.setText("Apagar");
+        b_apagar.setEnabled(false);
         b_apagar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_apagarActionPerformed(evt);
@@ -91,39 +94,46 @@ public class GerenciaProduto extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(b_visualizar)
+                .addGap(18, 18, 18)
+                .addComponent(b_apagar)
+                .addGap(309, 309, 309))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(227, 227, 227)
-                        .addComponent(b_visualizar)
-                        .addGap(18, 18, 18)
-                        .addComponent(b_apagar)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 748, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_visualizar)
                     .addComponent(b_apagar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_visualizarActionPerformed
 
         try {
-
+            if (this.jTableProdutos.getSelectedRow() == -1) {
+                throw new Exception("Primeiro selecione um produto para visualizar.");
+            } else {
+                Produto produtoSelecionado = pegarDadosProdutoSelecionado();
+                new VisualizaProduto(produtoSelecionado, possuiAdmin).setVisible(true);
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+        } finally {
+            this.dispose();
         }
     }//GEN-LAST:event_b_visualizarActionPerformed
 
@@ -166,47 +176,26 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 produto.getCodigo_produto(),
                 produto.getNome_produto(),
                 produto.getDescricao_produto(),
+                produto.getQuantidade_estoque(),
                 produto.getPreco(),
-                produto.getData_cadastro(),
-                produto.getCategoria_produto()
+                produto.getCategoria_produto(),
+                produto.getData_cadastro()
             });
         }
         
+        this.b_apagar.setEnabled(possuiAdmin);
     }
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GerenciaProduto().setVisible(true);
-            }
-        });
+    private Produto pegarDadosProdutoSelecionado() {
+        return new Produto(
+            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString()), //cod
+            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 1).toString(), //nm
+            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 2).toString(), //des
+            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 5).toString(),//cat
+            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 3).toString()), //qnt
+            Double.parseDouble(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 4).toString()), //pre
+            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 6).toString()//dat
+        );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

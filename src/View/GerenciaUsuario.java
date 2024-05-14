@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 
 public class GerenciaUsuario extends javax.swing.JFrame {
 
-    private UsuarioDAO usuarioDAO;
+    private final UsuarioDAO usuarioDAO;
     private ArrayList<Usuario> listaUsuarios;
     private String nomeAntigo = "";
 
