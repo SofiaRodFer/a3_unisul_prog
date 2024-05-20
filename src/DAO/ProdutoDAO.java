@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.PreparedStatement;
+import javax.swing.JOptionPane;
 
 
 /**
@@ -65,7 +66,6 @@ public class ProdutoDAO {
 
             connection = DriverManager.getConnection(url, user, password);
 
-
             if (connection != null) {
                 System.out.println("Status: Conectado!");
             } else {
@@ -92,6 +92,66 @@ public class ProdutoDAO {
         try {
             stmt = this.getConexao().createStatement();
             ResultSet res = stmt.executeQuery("SELECT * FROM produtos");
+            while (res.next()) {
+                Produto produto = new Produto(
+                    res.getInt("codigo_produto"),
+                    res.getString("nome_produto"),
+                    res.getString("descricao_produto"),
+                    res.getString("categoria"),
+                    res.getInt("quantidade_estoque"),
+                    res.getDouble("preco"),
+                    res.getString("data_cadastro")
+                );
+                MinhaLista.add(produto);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter lista: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+        }
+
+        return MinhaLista;
+    }
+    
+    public Double getValorEstoque() {
+        Statement stmt = null;
+        Double valorTotal = 0.00;
+
+        try {
+            stmt = this.getConexao().createStatement();
+            ResultSet res = stmt.executeQuery("SELECT * FROM produtos");
+            while (res.next()) {
+                valorTotal += res.getDouble("preco") * res.getInt("quantidade_estoque");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter valor do estoque: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+            
+            return valorTotal;
+        }
+    }
+    
+        public ArrayList getProdutosEmFalta() {
+            MinhaLista.clear(); 
+        Statement stmt = null;
+
+        try {
+            stmt = this.getConexao().createStatement();
+            ResultSet res = stmt.executeQuery("SELECT * FROM produtos WHERE quantidade_estoque = 0");
             while (res.next()) {
                 Produto produto = new Produto(
                     res.getInt("codigo_produto"),
@@ -213,21 +273,21 @@ public class ProdutoDAO {
 
         try {
             Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM produto WHERE codigo_produto = " + codigo_produto);
+            ResultSet res = stmt.executeQuery("SELECT * FROM produtos WHERE codigo_produto = " + codigo_produto);
             res.next();
 
             objeto.setCategoria_produto(res.getString("codigo_produto"));
             objeto.setNome_produto(res.getString("nome_produto"));
             objeto.setDescricao_produto(res.getString("descricao_produto"));
-            objeto.setCategoria_produto(res.getString("categoria_produto"));
-            objeto.setQuantidade_estoque(res.getInt("quantidade_produto"));
+            objeto.setCategoria_produto(res.getString("categoria"));
+            objeto.setQuantidade_estoque(res.getInt("quantidade_estoque"));
             objeto.setPreco(res.getDouble("preco"));
             objeto.setData_cadastro(res.getString("data_cadastro"));
-
 
             stmt.close();            
 
         } catch (SQLException erro) {
+            JOptionPane.showMessageDialog(null, erro.getMessage());
         }
         return objeto;
     }
