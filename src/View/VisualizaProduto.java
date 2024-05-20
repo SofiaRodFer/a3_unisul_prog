@@ -361,6 +361,8 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }
     
     private void iniciarCampos() {
+        setTitle(this.produtoSelecionado.getNome_produto() + " - Null Alliance");
+        
         this.b_salvarAlteracao.setVisible(false);
         this.b_cancelarAlteracao.setVisible(false);
         this.jDescricaoEdita.setVisible(false);

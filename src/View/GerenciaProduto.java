@@ -52,6 +52,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jTitulo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Estoque de Produtos - Null Alliance");
 
         b_visualizar.setText("Visualizar");
         b_visualizar.addActionListener(new java.awt.event.ActionListener() {
