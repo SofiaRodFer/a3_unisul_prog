@@ -37,6 +37,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
             btnAdicionarProduto.setEnabled(true);
             btnAdicionarProduto.setVisible(true);
+            
+            btnRelatorioAdm.setEnabled(true);
+            btnRelatorioAdm.setVisible(true);
         } else {
             btnGerenciarUsuarios.setEnabled(false);
             btnGerenciarUsuarios.setVisible(false);
@@ -49,6 +52,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
             btnAdicionarProduto.setEnabled(false);
             btnAdicionarProduto.setVisible(false);
+            
+            btnRelatorioAdm.setEnabled(false);
+            btnRelatorioAdm.setVisible(false);
         }
     }
 
@@ -69,6 +75,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         labelUsuario = new javax.swing.JLabel();
         btnGerenciarUsuarios = new javax.swing.JButton();
         btnAdicionarUsuario = new javax.swing.JButton();
+        btnRelatorioAdm = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -126,6 +133,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 btnAdicionarUsuarioActionPerformed(evt);
             }
         });
+
+        btnRelatorioAdm.setText("Relatório de Administrador");
+        btnRelatorioAdm.setEnabled(false);
+        btnRelatorioAdm.setPreferredSize(new java.awt.Dimension(93, 23));
+        btnRelatorioAdm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRelatorioAdmActionPerformed(evt);
+            }
+        });
         setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -137,12 +153,13 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnVerEstoque, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnProdutosEmFalta, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnProdutosEmFalta, javax.swing.GroupLayout.DEFAULT_SIZE, 172, Short.MAX_VALUE)
                     .addComponent(btnGerenciarUsuarios, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAdicionarProduto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnAdicionarUsuario, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labelUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(258, Short.MAX_VALUE))
+                    .addComponent(labelUsuario, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnRelatorioAdm, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(232, Short.MAX_VALUE))
             .addComponent(bemvindo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -159,12 +176,14 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btnAdicionarProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(btnRelatorioAdm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
                 .addComponent(labelUsuario)
                 .addGap(18, 18, 18)
                 .addComponent(btnGerenciarUsuarios)
                 .addGap(18, 18, 18)
                 .addComponent(btnAdicionarUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addContainerGap(106, Short.MAX_VALUE))
         );
 
         pack();
@@ -176,7 +195,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarProdutoActionPerformed
 
     private void btnProdutosEmFaltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosEmFaltaActionPerformed
-        // TODO add your handling code here:
+        GerenciaProduto produto = new GerenciaProduto(possuiAdmin(), true);
+        produto.setVisible(true);
+        produto.carregaTabela();
     }//GEN-LAST:event_btnProdutosEmFaltaActionPerformed
 
     private void btnGerenciarUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerenciarUsuariosActionPerformed
@@ -203,10 +224,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAdicionarUsuarioActionPerformed
 
     private void btnVerEstoqueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerEstoqueActionPerformed
-        GerenciaProduto produto = new GerenciaProduto(possuiAdmin());
+        GerenciaProduto produto = new GerenciaProduto(possuiAdmin(), false);
         produto.setVisible(true);
         produto.carregaTabela();
     }//GEN-LAST:event_btnVerEstoqueActionPerformed
+
+    private void btnRelatorioAdmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioAdmActionPerformed
+        RelatorioAdministrador relatorio = new RelatorioAdministrador();
+        relatorio.setVisible(true);
+    }//GEN-LAST:event_btnRelatorioAdmActionPerformed
 
     private boolean possuiAdmin() {
         return this.usuarioLogado.getPermissao().equals("admin");
@@ -218,6 +244,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnAdicionarUsuario;
     private javax.swing.JButton btnGerenciarUsuarios;
     private javax.swing.JButton btnProdutosEmFalta;
+    private javax.swing.JButton btnRelatorioAdm;
     private javax.swing.JButton btnVerEstoque;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenuBar jMenuBar1;

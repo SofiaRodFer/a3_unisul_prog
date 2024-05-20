@@ -7,6 +7,8 @@ package View;
 import DAO.ProdutoDAO;
 import Model.Produto;
 import Result.Resultado;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 
 /**
@@ -18,18 +20,24 @@ public class VisualizaProduto extends javax.swing.JFrame {
     private Produto produtoSelecionado;
     private final ProdutoDAO dao;
     private final boolean possuiAdmin;
+    private final boolean visualizaEmFalta;
+    private final static SimpleDateFormat formataDataInicial = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private final static SimpleDateFormat formataDataFinal = new SimpleDateFormat("dd/MM/yyyy \'às\' hh:mm\'h\'");
+    private final DecimalFormat formataMoeda = new DecimalFormat("R$ #,##0.00");
 
     /**
      * Creates new form VisualizaProduto
      * @param produto
      * @param possuiAdmin
+     * @param visualizaEmFalta
      */
-    public VisualizaProduto(Produto produto, boolean possuiAdmin) {
+    public VisualizaProduto(Produto produto, boolean possuiAdmin, boolean visualizaEmFalta) {
         System.out.println(produto);
         this.dao = new ProdutoDAO();
         initComponents();
         this.produtoSelecionado = produto;
         this.possuiAdmin = possuiAdmin;
+        this.visualizaEmFalta = visualizaEmFalta;
         this.iniciarCampos();
         this.preencherDados();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -303,32 +311,36 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_b_cancelarAlteracaoActionPerformed
 
     private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
-        new GerenciaProduto(possuiAdmin).setVisible(true);
+        new GerenciaProduto(possuiAdmin, visualizaEmFalta).setVisible(true);
     }//GEN-LAST:event_formWindowClosed
 
     private void preencherDados() {
-        String nome = this.produtoSelecionado.getNome_produto();
-        String categoria = this.produtoSelecionado.getCategoria_produto();
-        int codigo = this.produtoSelecionado.getCodigo_produto();
-        String data = this.produtoSelecionado.getData_cadastro();
-        String descricao = this.produtoSelecionado.getDescricao_produto();
-        Double preco = this.produtoSelecionado.getPreco();
-        int quantidade = this.produtoSelecionado.getQuantidade_estoque();
-        
-        this.jCategoriaProduto.setText(categoria);
-        this.jCodigoProduto.setText(String.valueOf(codigo));
-        this.jDataProduto.setText(data);
-        this.jDescricaoProduto.setText(descricao);
-        this.jNomeProduto.setText(nome);
-        this.jPrecoProduto.setText("R$ " + String.valueOf(preco));
-        this.jQuantidadeProduto.setText(String.valueOf(quantidade));
-        this.jValorEstoque.setText("R$ " + String.valueOf(calcularValorEstoque()));
-        
-        this.jDescricaoEdita.setText(descricao);
-        this.jQuantidadeEdita.setText(String.valueOf(quantidade));
-        this.jCategoriaEdita.setText(categoria);
-        this.jPrecoEdita.setText(String.valueOf(preco));
-        this.jNomeEdita.setText(nome);
+        try {
+            String nome = this.produtoSelecionado.getNome_produto();
+            String categoria = this.produtoSelecionado.getCategoria_produto();
+            int codigo = this.produtoSelecionado.getCodigo_produto();
+            String data = formataDataFinal.format(formataDataInicial.parse(this.produtoSelecionado.getData_cadastro()));
+            String descricao = this.produtoSelecionado.getDescricao_produto();
+            Double preco = this.produtoSelecionado.getPreco();
+            int quantidade = this.produtoSelecionado.getQuantidade_estoque();
+
+            this.jCategoriaProduto.setText(categoria);
+            this.jCodigoProduto.setText(String.valueOf(codigo));
+            this.jDataProduto.setText(data);
+            this.jDescricaoProduto.setText(descricao);
+            this.jNomeProduto.setText(nome);
+            this.jPrecoProduto.setText(formataMoeda.format(preco));
+            this.jQuantidadeProduto.setText(String.valueOf(quantidade));
+            this.jValorEstoque.setText(formataMoeda.format(calcularValorEstoque()));
+
+            this.jDescricaoEdita.setText(descricao);
+            this.jQuantidadeEdita.setText(String.valueOf(quantidade));
+            this.jCategoriaEdita.setText(categoria);
+            this.jPrecoEdita.setText(String.valueOf(preco));
+            this.jNomeEdita.setText(nome);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
     }
     
     private void alterarModo() {
@@ -364,7 +376,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
     private Double calcularValorEstoque() {
         Double quantidade = Double.valueOf(this.produtoSelecionado.getQuantidade_estoque());
         Double preco = this.produtoSelecionado.getPreco();
-        return Double.valueOf(Math.round(quantidade * preco));
+        return quantidade * preco;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
