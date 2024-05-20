@@ -172,7 +172,9 @@ public class TelaPrincipal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAdicionarProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarProdutoActionPerformed
-        // TODO add your handling code here:
+        AdicionarProduto adicionarProduto = new AdicionarProduto();
+        adicionarProduto.setEnabled(true);
+        adicionarProduto.setVisible(true);
     }//GEN-LAST:event_btnAdicionarProdutoActionPerformed
 
     private void btnProdutosEmFaltaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutosEmFaltaActionPerformed

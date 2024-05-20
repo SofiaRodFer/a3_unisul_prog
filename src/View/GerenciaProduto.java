@@ -41,7 +41,6 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jTableProdutos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(634, 429));
 
         b_visualizar.setText("Visualizar");
         b_visualizar.addActionListener(new java.awt.event.ActionListener() {

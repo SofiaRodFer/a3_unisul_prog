@@ -39,6 +39,19 @@ public class Produto {
         this.dao = new ProdutoDAO();
     }
 
+    public Produto(int codigo_produto, String nome_produto, String descricao_produto, String categoria_produto, double preco, String data_cadastro, ProdutoDAO dao) {
+        this.codigo_produto = codigo_produto;
+        this.nome_produto = nome_produto;
+        this.descricao_produto = descricao_produto;
+        this.categoria_produto = categoria_produto;
+        this.preco = preco;
+        this.data_cadastro = data_cadastro;
+        this.dao = dao;
+    }
+
+    
+    
+    
     public int getCodigo_produto() {
         return codigo_produto;
     }
