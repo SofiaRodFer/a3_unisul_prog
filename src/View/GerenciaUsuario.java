@@ -289,7 +289,7 @@ public class GerenciaUsuario extends javax.swing.JFrame {
      * @param args the command line arguments
      */
     @SuppressWarnings("unchecked")
-    public void carregaTabela() {
+    public final void carregaTabela() {
 
         DefaultTableModel modelo = (DefaultTableModel) this.jTableUsuarios.getModel();
         modelo.setNumRows(0);
