@@ -79,7 +79,7 @@ public class TelaPrincipal extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Interface de Teste");
+        setTitle("Tela Inicial - Null Alliance");
 
         bemvindo.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         bemvindo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);

@@ -146,7 +146,7 @@ public class ProdutoDAO {
     }
     
         public ArrayList getProdutosEmFalta() {
-            MinhaLista.clear(); 
+        MinhaLista.clear(); 
         Statement stmt = null;
 
         try {
