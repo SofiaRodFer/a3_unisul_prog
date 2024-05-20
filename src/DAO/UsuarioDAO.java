@@ -64,13 +64,6 @@ public class UsuarioDAO {
 
             connection = DriverManager.getConnection(url, user, password);
 
-            // Testando..
-//            if (connection == null) {
-//                System.out.println("Status: Conexão aberta.");
-//            } else {
-//                System.out.println("Status: N�O CONECTADO!");
-//            }
-
             return connection;
 
         } catch (ClassNotFoundException e) {  //Driver n�o encontrado

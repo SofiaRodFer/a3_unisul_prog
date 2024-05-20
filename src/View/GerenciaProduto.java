@@ -7,6 +7,8 @@ package View;
 import DAO.ProdutoDAO;
 import Model.Produto;
 import Result.Resultado;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,11 +21,19 @@ public class GerenciaProduto extends javax.swing.JFrame {
 
     private final ProdutoDAO produtoDAO;
     private ArrayList<Produto> listaProdutos;
+    private final boolean possuiAdmin;
+    private final boolean visualizaEmFalta;
+    private final static SimpleDateFormat formataDataInicial = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+    private final static SimpleDateFormat formataDataFinal = new SimpleDateFormat("dd/MM/yyyy");
+    private final DecimalFormat formataMoeda = new DecimalFormat("R$ #,##0.00");
     
-    public GerenciaProduto() {
+    public GerenciaProduto(boolean possuiAdmin, boolean visualizaEmFalta) {
         initComponents();
         this.produtoDAO = new ProdutoDAO();
         this.carregaTabela();
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        this.possuiAdmin = possuiAdmin;
+        this.visualizaEmFalta = visualizaEmFalta;
     }
 
     /**
@@ -39,8 +49,10 @@ public class GerenciaProduto extends javax.swing.JFrame {
         b_apagar = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableProdutos = new javax.swing.JTable();
+        jTitulo = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Estoque de Produtos - Null Alliance");
 
         b_visualizar.setText("Visualizar");
         b_visualizar.addActionListener(new java.awt.event.ActionListener() {
@@ -50,6 +62,7 @@ public class GerenciaProduto extends javax.swing.JFrame {
         });
 
         b_apagar.setText("Apagar");
+        b_apagar.setEnabled(false);
         b_apagar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 b_apagarActionPerformed(evt);
@@ -86,43 +99,59 @@ public class GerenciaProduto extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jTableProdutos);
 
+        jTitulo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jTitulo.setText("Estoque");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(316, Short.MAX_VALUE)
+                .addComponent(b_visualizar)
+                .addGap(18, 18, 18)
+                .addComponent(b_apagar)
+                .addGap(309, 309, 309))
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(20, 20, 20)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 594, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(227, 227, 227)
-                        .addComponent(b_visualizar)
-                        .addGap(18, 18, 18)
-                        .addComponent(b_apagar)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE)
+                    .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap()
+                .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_visualizar)
                     .addComponent(b_apagar))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(25, 25, 25))
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_visualizarActionPerformed
 
         try {
-
+            if (this.jTableProdutos.getSelectedRow() == -1) {
+                throw new Exception("Primeiro selecione um produto para visualizar.");
+            } else {
+                Produto produtoSelecionado = pegarDadosProdutoSelecionado();
+                new VisualizaProduto(produtoSelecionado, possuiAdmin, visualizaEmFalta).setVisible(true);
+            }
+            this.dispose();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
+        } finally {
+            carregaTabela();
         }
     }//GEN-LAST:event_b_visualizarActionPerformed
 
@@ -154,58 +183,65 @@ public class GerenciaProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_jTableProdutosMouseClicked
 
     @SuppressWarnings("unchecked")
-    public void carregaTabela() {
+    public final void carregaTabela() {
+        try {
+            DefaultTableModel modelo = (DefaultTableModel) this.jTableProdutos.getModel();
+            modelo.setNumRows(0);
+            if (visualizaEmFalta) {
+                this.listaProdutos = this.produtoDAO.getProdutosEmFalta();
+            } else {
+                this.listaProdutos = this.produtoDAO.getMinhaLista();
+            }
 
-        DefaultTableModel modelo = (DefaultTableModel) this.jTableProdutos.getModel();
-        modelo.setNumRows(0);
-        this.listaProdutos = this.produtoDAO.getMinhaLista();
+            for (Produto produto : listaProdutos) {
+                String data = formataDataFinal.format(formataDataInicial.parse(produto.getData_cadastro()));
+                String preco = formataMoeda.format(produto.getPreco());
 
-        for (Produto produto : listaProdutos) {
-            modelo.addRow(new Object[]{
-                produto.getCodigo_produto(),
-                produto.getNome_produto(),
-                produto.getDescricao_produto(),
-                produto.getPreco(),
-                produto.getData_cadastro(),
-                produto.getCategoria_produto()
-            });
+                modelo.addRow(new Object[]{
+                    produto.getCodigo_produto(),
+                    produto.getNome_produto(),
+                    produto.getDescricao_produto(),
+                    produto.getQuantidade_estoque(),
+                    preco,
+                    produto.getCategoria_produto(),
+                    data,
+                });
+            }
+
+            this.jTitulo.setText(construirTitulo());
+            this.b_apagar.setEnabled(possuiAdmin);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
         }
-        
     }
     
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GerenciaProduto.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    private Produto pegarDadosProdutoSelecionado() {
+        int codigoProduto = Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString());
+        return produtoDAO.carregaProdutoDB(codigoProduto);
+//        return new Produto(;
+//            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString()), //cod
+//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 1).toString(), //nm
+//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 2).toString(), //des
+//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 5).toString(),//cat
+//            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 3).toString()), //qnt
+//            Double.parseDouble(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 4).toString()), //pre
+//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 6).toString()//dat
+//        );
+    }
+    
+    private String construirTitulo() {
+        String sufixoProduto;
+        int tamanhoLista = listaProdutos.size();
+        if (tamanhoLista != 1) { 
+            sufixoProduto = "s";
+        } else {
+            sufixoProduto = "";
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GerenciaProduto().setVisible(true);
-            }
-        });
+        if (visualizaEmFalta) {
+            return ("Estoque - " + tamanhoLista + " produto" + sufixoProduto + " em falta");
+        } else {
+            return ("Estoque - " + tamanhoLista + " produto" + sufixoProduto);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -213,5 +249,6 @@ public class GerenciaProduto extends javax.swing.JFrame {
     private javax.swing.JButton b_visualizar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableProdutos;
+    private javax.swing.JLabel jTitulo;
     // End of variables declaration//GEN-END:variables
 }

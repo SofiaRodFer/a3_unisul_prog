@@ -39,7 +39,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
         c_permissao = new javax.swing.JComboBox<>();
         c_senha = new javax.swing.JPasswordField();
 
-        setTitle("Cadastro de Usuário");
+        setTitle("Cadastro de Usuário - Null Alliance");
         setResizable(false);
 
         jLabel1.setText("Nome:");
