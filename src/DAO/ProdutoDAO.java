@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package DAO;
 
 import Model.Produto;
@@ -16,49 +12,42 @@ import java.sql.PreparedStatement;
 import javax.swing.JOptionPane;
 
 
-/**
- *
- * @author emily
- */
 public class ProdutoDAO {
 
-    public static ArrayList<Produto> MinhaLista = new ArrayList<Produto>();
+    public static ArrayList<Produto> listaProdutos = new ArrayList<>();
 
-    public ProdutoDAO() {
-    }
+    public ProdutoDAO() {}
 
-
-     public int maiorCodigo_produto() throws SQLException {
-
-        int maiorCodigo_produto = 0;
+     public int getMaiorId() throws SQLException {
+        int maiorCodigoProduto = 0;
+        Statement stmt = null;
         try {
-            Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT MAX(codigo_produto) FROM produtos");
+            stmt = this.getConexao().createStatement();
+            ResultSet res = stmt.executeQuery("SELECT MAX(codigo_produto) FROM db_produtos.produtos;");
             res.next();
-            maiorCodigo_produto = res.getInt("codigo_produto");
-
-            stmt.close();
-
+            maiorCodigoProduto = res.getInt("MAX(codigo_produto)");
         } catch (SQLException ex) {
+            System.out.println("Erro obtendo maior ID: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
         }
 
-        return maiorCodigo_produto;
+        return maiorCodigoProduto + 1;
     }
 
-
     public Connection getConexao() {
-
         Connection connection = null;  
-
         try {
-
-
             String driver = "com.mysql.cj.jdbc.Driver";
             Class.forName(driver);
-
-
-            // Configurar a conex�o
-            String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com"; //caminho do MySQL
+            
+            String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com";;
             String database = "db_produtos";
             String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";
             String user = "admin";
@@ -73,20 +62,18 @@ public class ProdutoDAO {
             }
 
             return connection;
-
+            
         } catch (ClassNotFoundException e) { 
             System.out.println("O driver nao foi encontrado. " + e.getMessage() );
             return null;
-
         } catch (SQLException e) {
             System.out.println("Não foi possivel conectar.");
             return null;
         }
     }
 
-    public ArrayList getMinhaLista() {
-
-        MinhaLista.clear(); 
+    public ArrayList getListaProdutos() {
+        listaProdutos.clear(); 
         Statement stmt = null;
 
         try {
@@ -102,7 +89,7 @@ public class ProdutoDAO {
                     res.getDouble("preco"),
                     res.getString("data_cadastro")
                 );
-                MinhaLista.add(produto);
+                listaProdutos.add(produto);
             }
 
         } catch (SQLException ex) {
@@ -117,7 +104,31 @@ public class ProdutoDAO {
             }
         }
 
-        return MinhaLista;
+        return listaProdutos;
+    }
+    
+    public int getQuantidadeProdutos() {
+        Statement stmt = null;
+        int quantidadeProdutos = 0;
+        
+        try {
+            stmt = this.getConexao().createStatement();
+            ResultSet res = stmt.executeQuery("SELECT COUNT(codigo_produto) as qnt_produtos FROM produtos");
+            while (res.next()) {
+                quantidadeProdutos = res.getInt("qnt_produtos");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter quantidade de produtos: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+        }
+        return quantidadeProdutos;
     }
     
     public Double getValorEstoque() {
@@ -140,13 +151,12 @@ public class ProdutoDAO {
             } catch (SQLException e) {
                 System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
             }
-            
-            return valorTotal;
         }
+        return valorTotal;
     }
     
-        public ArrayList getProdutosEmFalta() {
-        MinhaLista.clear(); 
+    public ArrayList getProdutosEmFalta() {
+        listaProdutos.clear(); 
         Statement stmt = null;
 
         try {
@@ -162,7 +172,7 @@ public class ProdutoDAO {
                     res.getDouble("preco"),
                     res.getString("data_cadastro")
                 );
-                MinhaLista.add(produto);
+                listaProdutos.add(produto);
             }
 
         } catch (SQLException ex) {
@@ -177,42 +187,52 @@ public class ProdutoDAO {
             }
         }
 
-        return MinhaLista;
+        return listaProdutos;
     }
 
-    public boolean InsertProdutoDB(Produto objeto) {
-        String sql = "INSERT INTO produtos(codigo_produto, nome_produto, descricao_produto, categoria_produto, quantidade_estoque, preco, data_cadastro) VALUES(?,?,?,?,?)";
+    public Resultado inserirProduto(Produto objeto) {
+        String sql = "INSERT INTO produtos(codigo_produto, nome_produto, descricao_produto, categoria, quantidade_estoque, preco, data_cadastro) VALUES(?,?,?,?,?,?,?)";
+        PreparedStatement stmt = null;
+        boolean sucesso = false;
 
         try {
-            PreparedStatement stmt = this.getConexao().prepareStatement(sql);
-
-            stmt.setInt(1, objeto.getCodigo_produto());
-            stmt.setString(2, objeto.getNome_produto());
-            stmt.setString(3, objeto.getDescricao_produto());
-            stmt.setString(4, objeto.getCategoria_produto());
-            stmt.setInt(5, objeto.getQuantidade_estoque());
+            stmt = this.getConexao().prepareStatement(sql);
+            
+            stmt.setInt(1, objeto.getCodigoProduto());
+            stmt.setString(2, objeto.getNomeProduto());
+            stmt.setString(3, objeto.getDescricaoProduto());
+            stmt.setString(4, objeto.getCategoria());
+            stmt.setInt(5, objeto.getQuantidadeEstoque());
             stmt.setDouble(6, objeto.getPreco());
-            stmt.setString(7, objeto.getData_cadastro());
+            stmt.setString(7, objeto.getDataCadastro());
 
-
-            stmt.execute();
-            stmt.close();
-
-            return true;
-
+            sucesso = stmt.executeUpdate() > 0;
         } catch (SQLException erro) {
-            throw new RuntimeException(erro);
+            return new Resultado(false, "Erro ao deletar produto. Erro: " + erro.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+            if (sucesso) {
+                return new Resultado(true, "Produto inserido com sucesso.");
+            } else {
+                return new Resultado(false, "Erro ao inserir produto.");
+            }
         }
 
     }
 
-    public Resultado DeleteProdutoDB(int codigo_produto) {
+    public Resultado deletarProduto(int codigoProduto) {
         String sql = "DELETE FROM produtos WHERE codigo_produto = ?";
         PreparedStatement stmt = null;
         boolean sucesso = false;
         try (Connection con = getConexao();) {
             stmt = con.prepareStatement(sql);
-            stmt.setInt(1, codigo_produto);
+            stmt.setInt(1, codigoProduto);
             sucesso = stmt.executeUpdate() > 0;
         } catch (SQLException erro) {
             return new Resultado(false, "Erro ao deletar produto. Erro: " + erro.toString());
@@ -232,19 +252,19 @@ public class ProdutoDAO {
         }
     }
 
-    public Resultado UpdateProdutoDB(Produto produto) {
+    public Resultado atualizarProduto(Produto produto) {
         String sql = "UPDATE produtos SET nome_produto = ?, descricao_produto = ?, categoria = ?, quantidade_estoque = ?, preco = ? WHERE codigo_produto = ?";
         PreparedStatement stmt = null;
         boolean sucesso = false;
         
-        try (Connection con = getConexao();) {
+        try (Connection con = getConexao()) {
             stmt = con.prepareStatement(sql);
-            stmt.setString(1, produto.getNome_produto());
-            stmt.setString(2, produto.getDescricao_produto());
-            stmt.setString(3, produto.getCategoria_produto());
-            stmt.setInt(4, produto.getQuantidade_estoque());
+            stmt.setString(1, produto.getNomeProduto());
+            stmt.setString(2, produto.getDescricaoProduto());
+            stmt.setString(3, produto.getCategoria());
+            stmt.setInt(4, produto.getQuantidadeEstoque());
             stmt.setDouble(5, produto.getPreco());
-            stmt.setInt(6, produto.getCodigo_produto());
+            stmt.setInt(6, produto.getCodigoProduto());
             
             sucesso = stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -266,30 +286,29 @@ public class ProdutoDAO {
 
     }
 
-    public Produto carregaProdutoDB(int codigo_produto) {
-
-        Produto objeto = new Produto();
-        objeto.setCodigo_produto(codigo_produto);
+    public Produto carregarProduto(int codigoProduto) {
+        Produto produto = new Produto();
+        produto.setCodigoProduto(codigoProduto);
 
         try {
             Statement stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM produtos WHERE codigo_produto = " + codigo_produto);
+            ResultSet res = stmt.executeQuery("SELECT * FROM produtos WHERE codigo_produto = " + codigoProduto);
             res.next();
 
-            objeto.setCategoria_produto(res.getString("codigo_produto"));
-            objeto.setNome_produto(res.getString("nome_produto"));
-            objeto.setDescricao_produto(res.getString("descricao_produto"));
-            objeto.setCategoria_produto(res.getString("categoria"));
-            objeto.setQuantidade_estoque(res.getInt("quantidade_estoque"));
-            objeto.setPreco(res.getDouble("preco"));
-            objeto.setData_cadastro(res.getString("data_cadastro"));
+            produto.setCodigoProduto(res.getInt("codigo_produto"));
+            produto.setNomeProduto(res.getString("nome_produto"));
+            produto.setDescricaoProduto(res.getString("descricao_produto"));
+            produto.setCategoria(res.getString("categoria"));
+            produto.setQuantidadeEstoque(res.getInt("quantidade_estoque"));
+            produto.setPreco(res.getDouble("preco"));
+            produto.setDataCadastro(res.getString("data_cadastro"));
 
             stmt.close();            
 
         } catch (SQLException erro) {
             JOptionPane.showMessageDialog(null, erro.getMessage());
         }
-        return objeto;
+        return produto;
     }
 
 }

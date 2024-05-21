@@ -3,7 +3,6 @@ package View;
 import DAO.UsuarioDAO;
 import Model.Usuario;
 import Result.Resultado;
-import View.Mensagens;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.logging.Level;
@@ -12,11 +11,11 @@ import javax.swing.JOptionPane;
 
 public class CadastroUsuario extends javax.swing.JFrame {
 
-    private UsuarioDAO usuarioDAO; // Usar a instância do singleton UsuarioDAO
+    private final UsuarioDAO usuarioDAO;
 
     public CadastroUsuario() {
         initComponents();
-        usuarioDAO = new UsuarioDAO(); // Obter a instância única do singleton UsuarioDAO
+        usuarioDAO = new UsuarioDAO();
     }
 
     /**
@@ -38,6 +37,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
         b_cancelar = new javax.swing.JButton();
         c_permissao = new javax.swing.JComboBox<>();
         c_senha = new javax.swing.JPasswordField();
+        jTitulo = new javax.swing.JLabel();
 
         setTitle("Cadastro de Usuário - Null Alliance");
         setResizable(false);
@@ -78,6 +78,10 @@ public class CadastroUsuario extends javax.swing.JFrame {
 
         c_permissao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "-", "admin", "normal" }));
 
+        jTitulo.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jTitulo.setText("Cadastrar Usuário");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -102,12 +106,15 @@ public class CadastroUsuario extends javax.swing.JFrame {
                         .addComponent(b_cadastrar))
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(c_nome))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
+            .addComponent(jTitulo, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(12, 12, 12)
+                .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(c_nome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -127,7 +134,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_cadastrar)
                     .addComponent(b_cancelar))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         pack();
@@ -143,9 +150,7 @@ public class CadastroUsuario extends javax.swing.JFrame {
     }//GEN-LAST:event_c_emailActionPerformed
 
     private void b_cadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cadastrarActionPerformed
-
         try {
-            // Recebendo e validando dados da interface gráfica.
             String nome = "";
             String email = "";
             String permissao = "";
@@ -175,40 +180,28 @@ public class CadastroUsuario extends javax.swing.JFrame {
                 senha = this.c_senha.getText();
             }
 
-            // Criando um novo usuário
-            Usuario novoUsuario = new Usuario(usuarioDAO.maiorID(), nome, permissao, email, new Date(), senha);
-            
-            Resultado resultado = usuarioDAO.inserirUsuarioBD(novoUsuario);
+            Usuario novoUsuario = new Usuario(usuarioDAO.getMaiorId(), nome, permissao, email, new Date(), senha);
+            Resultado resultado = usuarioDAO.inserirUsuario(novoUsuario);
 
-            // Inserindo o novo usuário no banco de dados
             if (resultado.isSucesso()) {
-
-                // Limpa campos da interface
                 this.c_nome.setText("");
                 this.c_email.setText("");
                 this.c_permissao.setSelectedIndex(0);
                 this.c_senha.setText("");
-
             }
-            
+          
             JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
-
         } catch (Mensagens erro) {
             JOptionPane.showMessageDialog(null, erro.getMessage());
         } catch (SQLException ex) {
             Logger.getLogger(CadastroUsuario.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-
-
     }//GEN-LAST:event_b_cadastrarActionPerformed
 
     private void b_cancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_cancelarActionPerformed
-        // TODO add your handling code here:
         this.setVisible(false);
-
     }//GEN-LAST:event_b_cancelarActionPerformed
-
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_cadastrar;
@@ -221,5 +214,6 @@ public class CadastroUsuario extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jTitulo;
     // End of variables declaration//GEN-END:variables
 }

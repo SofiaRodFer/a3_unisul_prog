@@ -1,35 +1,27 @@
 package Model;
 
 import java.util.*;
-import DAO.UsuarioDAO;
-import java.sql.SQLException;
 
 public class Usuario {
 
-    private int id_usuario;
+    private int id;
     private String nome;
     private String permissao; 
     private String email;
-    private Date data_cadastro;
+    private Date dataCadastro;
     private String senha;
-    private final UsuarioDAO dao; 
 
-    public Usuario() {
-        this.dao = new UsuarioDAO();
-    }
-
-    public Usuario(int id_usuario, String nome, String permissao, String email, Date data_cadastro, String senha) {
-        this.id_usuario = id_usuario;
+    public Usuario(int id, String nome, String permissao, String email, Date dataCadastro, String senha) {
+        this.id = id;
         this.nome = nome;
         this.permissao = permissao;
         this.email = email;
-        this.data_cadastro = data_cadastro;
+        this.dataCadastro = dataCadastro;
         this.senha = senha;
-        this.dao = new UsuarioDAO();
     }
     
     public int getID() {
-        return id_usuario;
+        return id;
     }
 
     public String getNome() {
@@ -57,11 +49,11 @@ public class Usuario {
     }
 
     public Date getDataCadastro() {
-        return data_cadastro;
+        return dataCadastro;
     }
 
-    public void setDataCadastro(Date data_cadastro) {
-        this.data_cadastro = data_cadastro;
+    public void setDataCadastro(Date dataCadastro) {
+        this.dataCadastro = dataCadastro;
     }
 
     public String getSenha() {
@@ -74,30 +66,12 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "\n ID: " + this.id_usuario
+        return "\n ID: " + this.id
                 + "\n Nome: " + this.nome
                 + "\n Permissão: " + this.permissao
                 + "\n Email: " + this.email
-                + "\n Data de Cadastro: " + this.data_cadastro
+                + "\n Data de Cadastro: " + this.dataCadastro
                 + "\n -----------";
     }
-    
-    public boolean DeleteUsuario(int id) {
-        dao.deleteUsuarioBD(id);
-        return true;
-    }
-
-    public boolean UpdateUsuarioBD(String nome, String permissao, String email, Date data_cadastro, String senha) {
-        Usuario objeto = new Usuario(dao.getID(nome), nome, permissao, email, data_cadastro, senha);
-        dao.updateUsuarioBD(objeto);
-        return true;
-    }
-
-    public Usuario carregaUsuario(int id) {
-        return dao.carregaUsuario(id);
-    }
-
-    public int maiorID() throws SQLException {
-        return dao.maiorID();
-    }   
+ 
 }

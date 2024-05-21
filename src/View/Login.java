@@ -1,25 +1,10 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package View;
 
 import DAO.UsuarioDAO;
 import Model.Usuario;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author ricas
- */
 public class Login extends javax.swing.JFrame {
-
-    /**
-     * Creates new form TelaPrincipal
-     */
-    
-    private Usuario usuarioLogado; // Variável para armazenar o usuário logado
     
     public Login() {
         initComponents();
@@ -132,31 +117,22 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_emailActionPerformed
 
     private void entrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entrarActionPerformed
-        // Obter o email e a senha digitados pelo usuário
         String emailDigitado = email.getText();
         String senhaDigitada = senha.getText();
 
-        // Verificar se o email e a senha não estão vazios
         if (!emailDigitado.isEmpty() && !senhaDigitada.isEmpty()) {
-            // Tentar fazer login com o email e a senha fornecidos
             UsuarioDAO usuarioDAO = new UsuarioDAO();
             Usuario usuario = usuarioDAO.login(emailDigitado, senhaDigitada);
 
-            // Verificar se o login foi bem-sucedido
             if (usuario != null) {
-
-                // Fechar a tela de login
                 this.dispose();
 
-                // Abrir a tela principal
                 TelaPrincipal telaPrincipal = new TelaPrincipal(usuario);
                 telaPrincipal.setVisible(true);
             } else {
-                // Login falhou, exibir uma mensagem de erro
                 JOptionPane.showMessageDialog(this, "Email ou senha incorretos.");
             }
         } else {
-            // Email ou senha vazios, exibir uma mensagem de erro
             JOptionPane.showMessageDialog(this, "Por favor, insira seu email e senha.");
         }
     }//GEN-LAST:event_entrarActionPerformed
