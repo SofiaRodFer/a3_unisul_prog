@@ -157,9 +157,9 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 id = Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString());
             }
 
-            int resposta_produto = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
+            int respostaProduto = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
 
-            if (resposta_produto == 0) {
+            if (respostaProduto == 0) {
                 Resultado resultado = this.produtoDAO.deletarProduto(id);
                 JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
             }
