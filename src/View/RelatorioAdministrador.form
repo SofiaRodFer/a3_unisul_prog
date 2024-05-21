@@ -32,7 +32,7 @@
               <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jSeparator4" alignment="0" min="-2" pref="563" max="-2" attributes="0"/>
-                  <Component id="jQntProdutosEmFalta" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jQntEmFalta" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                   <Component id="jSeparator3" min="-2" pref="563" max="-2" attributes="0"/>
                   <Component id="jSeparator2" min="-2" pref="563" max="-2" attributes="0"/>
@@ -74,7 +74,7 @@
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="jQntProdutosEmFalta" min="-2" max="-2" attributes="0"/>
+              <Component id="jQntEmFalta" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jSeparator4" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace pref="93" max="32767" attributes="0"/>
@@ -154,7 +154,7 @@
         <Property name="text" type="java.lang.String" value="Quantidade de produtos em falta:"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jQntProdutosEmFalta">
+    <Component class="javax.swing.JLabel" name="jQntEmFalta">
       <Properties>
         <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
           <Font name="Segoe UI" size="14" style="0"/>

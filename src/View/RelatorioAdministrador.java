@@ -1,21 +1,11 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package View;
 
 import DAO.ProdutoDAO;
 import DAO.UsuarioDAO;
-import Model.Produto;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Sofia
- */
 public class RelatorioAdministrador extends javax.swing.JFrame {
     
     private final ProdutoDAO produtoDAO;
@@ -51,7 +41,7 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
         jSeparator2 = new javax.swing.JSeparator();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel4 = new javax.swing.JLabel();
-        jQntProdutosEmFalta = new javax.swing.JLabel();
+        jQntEmFalta = new javax.swing.JLabel();
         jSeparator4 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -83,8 +73,8 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel4.setText("Quantidade de produtos em falta:");
 
-        jQntProdutosEmFalta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jQntProdutosEmFalta.setText("placeholder");
+        jQntEmFalta.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jQntEmFalta.setText("placeholder");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -95,7 +85,7 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
                 .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jQntProdutosEmFalta)
+                    .addComponent(jQntEmFalta)
                     .addComponent(jLabel4)
                     .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 563, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -134,7 +124,7 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jQntProdutosEmFalta)
+                .addComponent(jQntEmFalta)
                 .addGap(18, 18, 18)
                 .addComponent(jSeparator4, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(93, Short.MAX_VALUE))
@@ -147,15 +137,16 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     public final void carregaDados() {
         try {
-            ArrayList produtos = this.produtoDAO.getMinhaLista();
-            ArrayList usuarios = this.usuarioDAO.getMinhaLista();
+            int quantidadeProdutos = this.produtoDAO.getQuantidadeProdutos();
+            System.out.println(quantidadeProdutos);
+            ArrayList usuarios = this.usuarioDAO.getListaUsuarios();
             String valorEstoque = String.valueOf(formataMoeda.format(this.produtoDAO.getValorEstoque()));
             int produtosEmFalta = this.produtoDAO.getProdutosEmFalta().size();
-            
-            this.jQntProdutos.setText(String.valueOf(produtos.size()));
+
+            this.jQntProdutos.setText(String.valueOf(quantidadeProdutos));
             this.jQntUsuarios.setText(String.valueOf(usuarios.size()));
             this.jValorEstoque.setText(valorEstoque);
-            this.jQntProdutosEmFalta.setText(String.valueOf(produtosEmFalta));
+            this.jQntEmFalta.setText(String.valueOf(produtosEmFalta));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
@@ -166,8 +157,8 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jQntEmFalta;
     private javax.swing.JLabel jQntProdutos;
-    private javax.swing.JLabel jQntProdutosEmFalta;
     private javax.swing.JLabel jQntUsuarios;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;

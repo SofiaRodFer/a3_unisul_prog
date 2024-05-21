@@ -13,13 +13,11 @@ import java.sql.Date;
 
 public class UsuarioDAO {
 
-    public static ArrayList<Usuario> MinhaLista = new ArrayList<Usuario>();
+    public static ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
-    public UsuarioDAO() {
-    }
+    public UsuarioDAO() {}
 
-    public int maiorID() throws SQLException {
-
+    public int getMaiorId() throws SQLException {
         int maiorID = 0;
         Statement stmt = null;
         try {
@@ -27,9 +25,6 @@ public class UsuarioDAO {
             ResultSet res = stmt.executeQuery("SELECT MAX(id_usuario) id_usuario FROM usuarios");
             res.next();
             maiorID = res.getInt("id_usuario");
-
-            stmt.close();
-
         } catch (SQLException ex) {
             System.out.println("Erro obtendo maior ID: " + ex.toString());
         } finally {
@@ -47,16 +42,13 @@ public class UsuarioDAO {
 
     public Connection getConexao() {
 
-        Connection connection = null;  //inst�ncia da conex�o
+        Connection connection = null; 
 
         try {
-
-            // Carregamento do JDBC Driver
             String driver = "com.mysql.cj.jdbc.Driver";
             Class.forName(driver);
 
-            // Configurar a conex�o
-            String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com"; //caminho do MySQL
+            String server = "database-1.clakmqs02kce.sa-east-1.rds.amazonaws.com";
             String database = "db_produtos";
             String url = "jdbc:mysql://" + server + ":3306/" + database + "?useTimezone=true&serverTimezone=UTC";
             String user = "admin";
@@ -66,7 +58,7 @@ public class UsuarioDAO {
 
             return connection;
 
-        } catch (ClassNotFoundException e) {  //Driver n�o encontrado
+        } catch (ClassNotFoundException e) { 
             System.out.println("O driver nao foi encontrado. " + e.getMessage() );
             return null;
 
@@ -76,7 +68,7 @@ public class UsuarioDAO {
         }
     }
     
-    public String obterSenha(int id) {
+    public String getSenha(int id) {
         String sql = "SELECT senha FROM usuarios WHERE id_usuario = ?";
         PreparedStatement stmt = null;
         String senha = "";
@@ -104,8 +96,7 @@ public class UsuarioDAO {
         return senha;
     }
 
-    public Resultado inserirUsuarioBD(Usuario objeto) {
-        // Verifique se o email já existe
+    public Resultado inserirUsuario(Usuario objeto) {
         if (emailExiste(objeto.getEmail())) {
             return new Resultado(false, "Erro: O email " + objeto.getEmail() + " já está em uso.");
         }
@@ -120,16 +111,10 @@ public class UsuarioDAO {
             stmt.setString(2, objeto.getNome());
             stmt.setString(3, objeto.getPermissao());
             stmt.setString(4, objeto.getEmail());
-            stmt.setDate(5, new Date(objeto.getDataCadastro().getTime())); // Converter para java.sql.Date
+            stmt.setDate(5, new Date(objeto.getDataCadastro().getTime()));
             stmt.setString(6, objeto.getSenha());
             
             sucesso = stmt.executeUpdate() > 0;
-
-            if (sucesso) {
-                return new Resultado(true, "Usuário inserido com sucesso.");
-            } else {
-                return new Resultado(false, "Erro ao inserir usuário.");
-            }
         } catch (SQLException e) {
             System.out.println("Erro ao inserir usuário: " + e.toString());
         } finally {
@@ -178,9 +163,8 @@ public class UsuarioDAO {
         return sucesso;
     }
     
-    public ArrayList getMinhaLista() {
-        
-        MinhaLista.clear(); // Limpa nosso ArrayList
+    public ArrayList getListaUsuarios() {
+        listaUsuarios.clear();
         Statement stmt = null;
 
         try {
@@ -189,14 +173,14 @@ public class UsuarioDAO {
             while (rs.next()) {
                 
                 Usuario usuario = new Usuario(
-                rs.getInt("id_usuario"),
-                rs.getString("nome"),
-                rs.getString("permissao"),
-                rs.getString("email"),
-                rs.getDate("data_cadastro"),
-                rs.getString("senha")  
+                    rs.getInt("id_usuario"),
+                    rs.getString("nome"),
+                    rs.getString("permissao"),
+                    rs.getString("email"),
+                    rs.getDate("data_cadastro"),
+                    rs.getString("senha")  
                 );
-                MinhaLista.add(usuario);
+                listaUsuarios.add(usuario);
             }
 
         } catch (SQLException ex) {
@@ -211,23 +195,21 @@ public class UsuarioDAO {
             }
         }
 
-        return MinhaLista;
+        return listaUsuarios;
     }
     
     public int getID(String nome) {
-        this.getMinhaLista();
-        // Iterar sobre a lista de usuários (ou consultar o banco de dados)
-        for (Usuario usuario : MinhaLista) {
+        this.getListaUsuarios();
+        for (Usuario usuario : listaUsuarios) {
             if (usuario.getNome().equals(nome)) {
                 return usuario.getID();
             }
         }
-        // Se o nome não for encontrado, retorna -1
         return -1;
     }
 
 
-    public Resultado deleteUsuarioBD(int id) {
+    public Resultado deletarUsuario(int id) {
         String sql = "DELETE FROM usuarios WHERE id_usuario = ?";
         PreparedStatement stmt = null;
         boolean sucesso = false;
@@ -254,7 +236,7 @@ public class UsuarioDAO {
         }
     }
 
-    public Resultado updateUsuarioBD(Usuario objeto) {
+    public Resultado atualizarUsuario(Usuario objeto) {
         String sql = "UPDATE usuarios SET nome = ?, permissao = ?, email = ?, senha = ? WHERE id_usuario = ?";
         PreparedStatement stmt = null;
         boolean sucesso = false;
@@ -286,7 +268,7 @@ public class UsuarioDAO {
         }
     }
 
-    public Usuario carregaUsuario(int id) {
+    public Usuario carregarUsuario(int id) {
         Usuario usuario = null;
         String sql = "SELECT * FROM usuarios WHERE id_usuario = ?";
         PreparedStatement stmt = null;
@@ -298,12 +280,12 @@ public class UsuarioDAO {
             
             if (rs.next()) {
                 usuario = new Usuario(
-                rs.getInt("id_usuario"),
-                rs.getString("nome"),
-                rs.getString("permissao"),
-                rs.getString("email"),
-                rs.getDate("data_cadastro"),
-                rs.getString("senha")  
+                    rs.getInt("id_usuario"),
+                    rs.getString("nome"),
+                    rs.getString("permissao"),
+                    rs.getString("email"),
+                    rs.getDate("data_cadastro"),
+                    rs.getString("senha")  
                 );
                 
                 stmt.close();
@@ -323,41 +305,6 @@ public class UsuarioDAO {
         return usuario;
     }
     
-    public ArrayList<Usuario> carregaUsuarios() {
-        ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
-        String sql = "SELECT * FROM usuarios";
-        PreparedStatement stmt = null;
-        
-        try (Connection con = getConexao()) {
-            stmt = con.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery();
-            
-            while (rs.next()) {
-                Usuario usuario = new Usuario(
-                rs.getInt("id_usuario"),
-                rs.getString("nome"),
-                rs.getString("permissao"),
-                rs.getString("email"),
-                rs.getDate("data_cadastro"),
-                rs.getString("senha")  
-                );
-                usuarios.add(usuario);
-            }
-        } catch (SQLException e) {
-            System.out.println("Erro carregando usuarios: " + e.toString());
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
-            }
-        }
-        
-        return usuarios;
-    }
-    
     public Usuario login(String email, String senha) {
         Usuario usuario = null;
         String sql = "SELECT * FROM usuarios WHERE email = ?";
@@ -369,9 +316,7 @@ public class UsuarioDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                // Verificar se a senha fornecida corresponde à senha do usuário recuperado
                 if (rs.getString("senha").equals(senha)) {
-                    // Senha correta, retornar o usuário
                     usuario = new Usuario(
                         rs.getInt("id_usuario"),
                         rs.getString("nome"),
@@ -381,11 +326,9 @@ public class UsuarioDAO {
                         rs.getString("senha")
                     );
                 } else {
-                    // Senha incorreta
                     System.out.println("Senha incorreta para o email fornecido.");
                 }
             } else {
-                // Usuário não encontrado com o email fornecido
                 System.out.println("Nenhum usuário encontrado com o email fornecido.");
             }
         } catch (SQLException e) {

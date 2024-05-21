@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package View;
 
 import DAO.ProdutoDAO;
@@ -11,10 +7,6 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import javax.swing.JOptionPane;
 
-/**
- *
- * @author Sofia
- */
 public class VisualizaProduto extends javax.swing.JFrame {
     
     private Produto produtoSelecionado;
@@ -22,15 +14,9 @@ public class VisualizaProduto extends javax.swing.JFrame {
     private final boolean possuiAdmin;
     private final boolean visualizaEmFalta;
     private final static SimpleDateFormat formataDataInicial = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private final static SimpleDateFormat formataDataFinal = new SimpleDateFormat("dd/MM/yyyy \'às\' hh:mm\'h\'");
+    private final static SimpleDateFormat formataDataFinal = new SimpleDateFormat("dd/MM/yyyy \'às\' HH:mm\'h\'");
     private final DecimalFormat formataMoeda = new DecimalFormat("R$ #,##0.00");
 
-    /**
-     * Creates new form VisualizaProduto
-     * @param produto
-     * @param possuiAdmin
-     * @param visualizaEmFalta
-     */
     public VisualizaProduto(Produto produto, boolean possuiAdmin, boolean visualizaEmFalta) {
         System.out.println(produto);
         this.dao = new ProdutoDAO();
@@ -229,12 +215,12 @@ public class VisualizaProduto extends javax.swing.JFrame {
 
     private void b_apagarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_apagarActionPerformed
         try {
-            int id = this.produtoSelecionado.getCodigo_produto();
+            int id = this.produtoSelecionado.getCodigoProduto();
 
-            int resposta_usuario = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
+            int respostaUsuario = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
 
-            if (resposta_usuario == 0) {
-                Resultado resultado = this.dao.DeleteProdutoDB(id);
+            if (respostaUsuario == 0) {
+                Resultado resultado = this.dao.deletarProduto(id);
                 JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
             }
 
@@ -285,15 +271,17 @@ public class VisualizaProduto extends javax.swing.JFrame {
             }
             
             produto = new Produto(
-                this.produtoSelecionado.getCodigo_produto(),
+                this.produtoSelecionado.getCodigoProduto(),
                 nome,
                 descricao,
                 categoria,
                 quantidade,
                 preco,
-                this.produtoSelecionado.getData_cadastro()
+                this.produtoSelecionado.getDataCadastro()
             );
-            Resultado resultado = this.dao.UpdateProdutoDB(produto);
+            
+            Resultado resultado = this.dao.atualizarProduto(produto);
+            
             if (resultado.isSucesso()) {
                 this.produtoSelecionado = produto;
                 preencherDados();
@@ -316,13 +304,13 @@ public class VisualizaProduto extends javax.swing.JFrame {
 
     private void preencherDados() {
         try {
-            String nome = this.produtoSelecionado.getNome_produto();
-            String categoria = this.produtoSelecionado.getCategoria_produto();
-            int codigo = this.produtoSelecionado.getCodigo_produto();
-            String data = formataDataFinal.format(formataDataInicial.parse(this.produtoSelecionado.getData_cadastro()));
-            String descricao = this.produtoSelecionado.getDescricao_produto();
+            String nome = this.produtoSelecionado.getNomeProduto();
+            String categoria = this.produtoSelecionado.getCategoria();
+            int codigo = this.produtoSelecionado.getCodigoProduto();
+            String data = formataDataFinal.format(formataDataInicial.parse(this.produtoSelecionado.getDataCadastro()));
+            String descricao = this.produtoSelecionado.getDescricaoProduto();
             Double preco = this.produtoSelecionado.getPreco();
-            int quantidade = this.produtoSelecionado.getQuantidade_estoque();
+            int quantidade = this.produtoSelecionado.getQuantidadeEstoque();
 
             this.jCategoriaProduto.setText(categoria);
             this.jCodigoProduto.setText(String.valueOf(codigo));
@@ -361,7 +349,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }
     
     private void iniciarCampos() {
-        setTitle(this.produtoSelecionado.getNome_produto() + " - Null Alliance");
+        setTitle(this.produtoSelecionado.getNomeProduto() + " - Null Alliance");
         
         this.b_salvarAlteracao.setVisible(false);
         this.b_cancelarAlteracao.setVisible(false);
@@ -376,7 +364,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
     }
     
     private Double calcularValorEstoque() {
-        Double quantidade = Double.valueOf(this.produtoSelecionado.getQuantidade_estoque());
+        Double quantidade = Double.valueOf(this.produtoSelecionado.getQuantidadeEstoque());
         Double preco = this.produtoSelecionado.getPreco();
         return quantidade * preco;
     }

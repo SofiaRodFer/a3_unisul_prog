@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package View;
 
 import DAO.ProdutoDAO;
@@ -13,10 +9,6 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Sofia
- */
 public class GerenciaProduto extends javax.swing.JFrame {
 
     private final ProdutoDAO produtoDAO;
@@ -30,10 +22,11 @@ public class GerenciaProduto extends javax.swing.JFrame {
     public GerenciaProduto(boolean possuiAdmin, boolean visualizaEmFalta) {
         initComponents();
         this.produtoDAO = new ProdutoDAO();
-        this.carregaTabela();
-        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         this.possuiAdmin = possuiAdmin;
         this.visualizaEmFalta = visualizaEmFalta;
+        this.carregarTabela();
+        this.carregarInformacoes();
+        this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     }
 
     /**
@@ -139,7 +132,6 @@ public class GerenciaProduto extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void b_visualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_b_visualizarActionPerformed
-
         try {
             if (this.jTableProdutos.getSelectedRow() == -1) {
                 throw new Exception("Primeiro selecione um produto para visualizar.");
@@ -151,7 +143,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         } finally {
-            carregaTabela();
+            carregarTabela();
+            carregarInformacoes();
         }
     }//GEN-LAST:event_b_visualizarActionPerformed
 
@@ -167,14 +160,14 @@ public class GerenciaProduto extends javax.swing.JFrame {
             int resposta_produto = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este produto?");
 
             if (resposta_produto == 0) {
-                Resultado resultado = this.produtoDAO.DeleteProdutoDB(id);
+                Resultado resultado = this.produtoDAO.deletarProduto(id);
                 JOptionPane.showMessageDialog(rootPane, resultado.getMensagem());
             }
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         } finally {
-            carregaTabela();
+            carregarTabela();
+            carregarInformacoes();
         }
     }//GEN-LAST:event_b_apagarActionPerformed
 
@@ -183,50 +176,44 @@ public class GerenciaProduto extends javax.swing.JFrame {
     }//GEN-LAST:event_jTableProdutosMouseClicked
 
     @SuppressWarnings("unchecked")
-    public final void carregaTabela() {
+    public final void carregarTabela() {
         try {
             DefaultTableModel modelo = (DefaultTableModel) this.jTableProdutos.getModel();
             modelo.setNumRows(0);
             if (visualizaEmFalta) {
                 this.listaProdutos = this.produtoDAO.getProdutosEmFalta();
             } else {
-                this.listaProdutos = this.produtoDAO.getMinhaLista();
+                this.listaProdutos = this.produtoDAO.getListaProdutos();
             }
 
             for (Produto produto : listaProdutos) {
-                String data = formataDataFinal.format(formataDataInicial.parse(produto.getData_cadastro()));
+                String data = formataDataFinal.format(formataDataInicial.parse(produto.getDataCadastro()));
                 String preco = formataMoeda.format(produto.getPreco());
 
                 modelo.addRow(new Object[]{
-                    produto.getCodigo_produto(),
-                    produto.getNome_produto(),
-                    produto.getDescricao_produto(),
-                    produto.getQuantidade_estoque(),
+                    produto.getCodigoProduto(),
+                    produto.getNomeProduto(),
+                    produto.getDescricaoProduto(),
+                    produto.getQuantidadeEstoque(),
                     preco,
-                    produto.getCategoria_produto(),
+                    produto.getCategoria(),
                     data,
                 });
             }
 
-            this.jTitulo.setText(construirTitulo());
-            this.b_apagar.setEnabled(possuiAdmin);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage());
         }
     }
     
+    private void carregarInformacoes() {
+        this.jTitulo.setText(construirTitulo());
+        this.b_apagar.setEnabled(possuiAdmin);
+    }
+    
     private Produto pegarDadosProdutoSelecionado() {
         int codigoProduto = Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString());
-        return produtoDAO.carregaProdutoDB(codigoProduto);
-//        return new Produto(;
-//            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 0).toString()), //cod
-//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 1).toString(), //nm
-//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 2).toString(), //des
-//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 5).toString(),//cat
-//            Integer.parseInt(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 3).toString()), //qnt
-//            Double.parseDouble(this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 4).toString()), //pre
-//            this.jTableProdutos.getValueAt(this.jTableProdutos.getSelectedRow(), 6).toString()//dat
-//        );
+        return produtoDAO.carregarProduto(codigoProduto);
     }
     
     private String construirTitulo() {

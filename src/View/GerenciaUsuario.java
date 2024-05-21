@@ -223,7 +223,7 @@ public class GerenciaUsuario extends javax.swing.JFrame {
             }
             
             Usuario usuario = new Usuario(this.usuarioDAO.getID(nomeAntigo), nome, permissao, email, null, senha);
-            Resultado resultado = this.usuarioDAO.updateUsuarioBD(usuario);
+            Resultado resultado = this.usuarioDAO.atualizarUsuario(usuario);
             if (resultado.isSucesso()) {
                 this.c_nome.setText("");
                 this.c_email.setText("");
@@ -240,11 +240,10 @@ public class GerenciaUsuario extends javax.swing.JFrame {
     private void jTableUsuariosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTableUsuariosMouseClicked
 
         if (this.jTableUsuarios.getSelectedRow() != -1) {
-
             String nome = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 1).toString();
             String email = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 2).toString();
             String permissao = this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 3).toString();
-            String senha = usuarioDAO.obterSenha((int) this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 0));
+            String senha = usuarioDAO.getSenha((int) this.jTableUsuarios.getValueAt(this.jTableUsuarios.getSelectedRow(), 0));
 
             this.c_nome.setText(nome);
             this.c_email.setText(email);
@@ -252,7 +251,6 @@ public class GerenciaUsuario extends javax.swing.JFrame {
             this.c_senha.setText(senha);
             
             nomeAntigo = this.c_nome.getText();
-
         }
     }//GEN-LAST:event_jTableUsuariosMouseClicked
 
@@ -268,7 +266,7 @@ public class GerenciaUsuario extends javax.swing.JFrame {
             int resposta_usuario = JOptionPane.showConfirmDialog(null, "Tem certeza que deseja apagar este usuário?");
 
             if (resposta_usuario == 0) {
-                Resultado resultado = this.usuarioDAO.deleteUsuarioBD(id);
+                Resultado resultado = this.usuarioDAO.deletarUsuario(id);
                 if (resultado.isSucesso()) {
                     this.c_nome.setText("");
                     this.c_email.setText("");
@@ -285,15 +283,11 @@ public class GerenciaUsuario extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_b_apagarActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     @SuppressWarnings("unchecked")
     public final void carregaTabela() {
-
         DefaultTableModel modelo = (DefaultTableModel) this.jTableUsuarios.getModel();
         modelo.setNumRows(0);
-        this.listaUsuarios = this.usuarioDAO.carregaUsuarios();
+        this.listaUsuarios = this.usuarioDAO.getListaUsuarios();
 
         for (Usuario usuario : listaUsuarios) {
             String senhaOfuscada = "";
