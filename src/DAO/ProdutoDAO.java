@@ -71,6 +71,33 @@ public class ProdutoDAO {
             return null;
         }
     }
+    
+    public ArrayList<String> getListaCategorias() {
+        ArrayList<String> listaCategorias = new ArrayList<>();
+        Statement stmt = null;
+
+        try {
+            stmt = this.getConexao().createStatement();
+            ResultSet res = stmt.executeQuery("SELECT DISTINCT categoria FROM produtos");
+            while (res.next()) {
+                String categoria = res.getString("categoria");
+                listaCategorias.add(categoria);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter lista de categorias: " + ex.toString());
+        } finally {
+            try {
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar o Statement: " + e.toString());
+            }
+        }
+
+        return listaCategorias;
+    }
 
     public ArrayList getListaProdutos() {
         listaProdutos.clear(); 
@@ -101,6 +128,55 @@ public class ProdutoDAO {
                 }
             } catch (SQLException e) {
                 System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
+            }
+        }
+
+        return listaProdutos;
+    }
+    
+    public ArrayList<Produto> getListaProdutos(String categoria) {
+        listaProdutos.clear();
+        PreparedStatement stmt = null;
+        ResultSet res = null;
+
+        try {
+            if (categoria != null && !categoria.equals("")) {
+                // Consulta para obter produtos filtrados pela categoria
+                String sql = "SELECT * FROM produtos WHERE categoria = ?";
+                stmt = this.getConexao().prepareStatement(sql);
+                stmt.setString(1, categoria);
+            } else {
+                // Consulta para obter todos os produtos se a categoria for vazia ou nula
+                String sql = "SELECT * FROM produtos";
+                stmt = this.getConexao().prepareStatement(sql);
+            }
+
+            res = stmt.executeQuery();
+            while (res.next()) {
+                Produto produto = new Produto(
+                    res.getInt("codigo_produto"),
+                    res.getString("nome_produto"),
+                    res.getString("descricao_produto"),
+                    res.getString("categoria"),
+                    res.getInt("quantidade_estoque"),
+                    res.getDouble("preco"),
+                    res.getString("data_cadastro")
+                );
+                listaProdutos.add(produto);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter lista de produtos: " + ex.toString());
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+                if (stmt != null) {
+                    stmt.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar recursos: " + e.toString());
             }
         }
 

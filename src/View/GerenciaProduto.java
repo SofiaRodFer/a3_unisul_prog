@@ -3,6 +3,8 @@ package View;
 import DAO.ProdutoDAO;
 import Model.Produto;
 import Result.Resultado;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,6 +29,26 @@ public class GerenciaProduto extends javax.swing.JFrame {
         this.carregarTabela();
         this.carregarInformacoes();
         this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+        ArrayList<String> categorias = this.produtoDAO.getListaCategorias();
+        for (int i = 0; i < categorias.size(); i++) {
+            filtro.addItem(categorias.get(i));
+        }
+        
+        // Adicionar ActionListener para detectar mudanças de seleção
+        filtro.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ação a ser executada quando a seleção muda
+                String categoriaSelecionada = (String) filtro.getSelectedItem();
+                System.out.println("Categoria selecionada: " + categoriaSelecionada);
+                if (categoriaSelecionada == "NENHUM") {
+                    GerenciaProduto.this.carregarTabela();
+                } else {
+                    GerenciaProduto.this.carregarTabela(categoriaSelecionada);
+                }
+            }
+        });
+
     }
 
     /**
@@ -43,6 +65,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTableProdutos = new javax.swing.JTable();
         jTitulo = new javax.swing.JLabel();
+        filtro = new javax.swing.JComboBox<>();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Estoque de Produtos - Null Alliance");
@@ -96,22 +120,31 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jTitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jTitulo.setText("Estoque");
 
+        filtro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NENHUM" }));
+
+        jLabel1.setText("Filtrar por:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(316, Short.MAX_VALUE)
-                .addComponent(b_visualizar)
-                .addGap(18, 18, 18)
-                .addComponent(b_apagar)
-                .addGap(309, 309, 309))
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE)
-                    .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(b_visualizar)
+                        .addGap(18, 18, 18)
+                        .addComponent(b_apagar)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE)
+                            .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(27, Short.MAX_VALUE))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,7 +156,10 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(b_visualizar)
-                    .addComponent(b_apagar))
+                    .addComponent(b_apagar)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)))
                 .addGap(25, 25, 25))
         );
 
@@ -206,6 +242,40 @@ public class GerenciaProduto extends javax.swing.JFrame {
         }
     }
     
+    public final void carregarTabela(String categoria) {
+        try {
+            DefaultTableModel modelo = (DefaultTableModel) this.jTableProdutos.getModel();
+            modelo.setNumRows(0);
+            if (visualizaEmFalta) {
+                this.listaProdutos = this.produtoDAO.getProdutosEmFalta();
+            } else {
+                if (categoria != "") {
+                    this.listaProdutos = this.produtoDAO.getListaProdutos(categoria);
+                } else {
+                    this.listaProdutos = this.produtoDAO.getListaProdutos();
+                }
+            }
+
+            for (Produto produto : listaProdutos) {
+                String data = formataDataFinal.format(formataDataInicial.parse(produto.getDataCadastro()));
+                String preco = formataMoeda.format(produto.getPreco());
+
+                modelo.addRow(new Object[]{
+                    produto.getCodigoProduto(),
+                    produto.getNomeProduto(),
+                    produto.getDescricaoProduto(),
+                    produto.getQuantidadeEstoque(),
+                    preco,
+                    produto.getCategoria(),
+                    data,
+                });
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage());
+        }
+    }
+    
     private void carregarInformacoes() {
         this.jTitulo.setText(construirTitulo());
         this.b_apagar.setEnabled(possuiAdmin);
@@ -234,6 +304,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton b_apagar;
     private javax.swing.JButton b_visualizar;
+    private javax.swing.JComboBox<String> filtro;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableProdutos;
     private javax.swing.JLabel jTitulo;
