@@ -138,7 +138,6 @@ public class RelatorioAdministrador extends javax.swing.JFrame {
     public final void carregaDados() {
         try {
             int quantidadeProdutos = this.produtoDAO.getQuantidadeProdutos();
-            System.out.println(quantidadeProdutos);
             ArrayList usuarios = this.usuarioDAO.getListaUsuarios();
             String valorEstoque = String.valueOf(formataMoeda.format(this.produtoDAO.getValorEstoque()));
             int produtosEmFalta = this.produtoDAO.getProdutosEmFalta().size();

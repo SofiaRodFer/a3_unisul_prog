@@ -141,12 +141,10 @@ public class ProdutoDAO {
 
         try {
             if (categoria != null && !categoria.equals("")) {
-                // Consulta para obter produtos filtrados pela categoria
                 String sql = "SELECT * FROM produtos WHERE categoria = ?";
                 stmt = this.getConexao().prepareStatement(sql);
                 stmt.setString(1, categoria);
             } else {
-                // Consulta para obter todos os produtos se a categoria for vazia ou nula
                 String sql = "SELECT * FROM produtos";
                 stmt = this.getConexao().prepareStatement(sql);
             }

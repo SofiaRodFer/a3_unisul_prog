@@ -126,7 +126,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
 
         jDataProduto.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jDataProduto.setText("placeholder");
-        getContentPane().add(jDataProduto, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 320, -1, -1));
+        getContentPane().add(jDataProduto, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 320, -1, -1));
 
         b_alterar.setText("Alterar");
         b_alterar.setEnabled(false);
@@ -135,7 +135,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
                 b_alterarActionPerformed(evt);
             }
         });
-        getContentPane().add(b_alterar, new org.netbeans.lib.awtextra.AbsoluteConstraints(305, 383, -1, -1));
+        getContentPane().add(b_alterar, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 380, -1, -1));
 
         b_salvarAlteracao.setText("Salvar");
         b_salvarAlteracao.addActionListener(new java.awt.event.ActionListener() {
@@ -143,7 +143,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
                 b_salvarAlteracaoActionPerformed(evt);
             }
         });
-        getContentPane().add(b_salvarAlteracao, new org.netbeans.lib.awtextra.AbsoluteConstraints(305, 383, -1, -1));
+        getContentPane().add(b_salvarAlteracao, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 380, -1, -1));
 
         b_apagar.setText("Apagar");
         b_apagar.setEnabled(false);
@@ -152,7 +152,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
                 b_apagarActionPerformed(evt);
             }
         });
-        getContentPane().add(b_apagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(395, 383, -1, -1));
+        getContentPane().add(b_apagar, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 380, -1, -1));
 
         b_cancelarAlteracao.setText("Cancelar");
         b_cancelarAlteracao.addActionListener(new java.awt.event.ActionListener() {
@@ -160,7 +160,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
                 b_cancelarAlteracaoActionPerformed(evt);
             }
         });
-        getContentPane().add(b_cancelarAlteracao, new org.netbeans.lib.awtextra.AbsoluteConstraints(395, 383, -1, -1));
+        getContentPane().add(b_cancelarAlteracao, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 380, -1, -1));
 
         jDescricaoEdita.setText("placeholderDescricao");
         jDescricaoEdita.setToolTipText("");
@@ -191,7 +191,7 @@ public class VisualizaProduto extends javax.swing.JFrame {
             .addGap(0, 30, Short.MAX_VALUE)
         );
 
-        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 410, 750, 30));
+        getContentPane().add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(-20, 410, 750, 30));
         getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 80, 700, 10));
 
         jDescricaoLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
