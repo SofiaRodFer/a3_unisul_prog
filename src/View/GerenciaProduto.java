@@ -41,7 +41,11 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 // Ação a ser executada quando a seleção muda
                 String categoriaSelecionada = (String) filtro.getSelectedItem();
                 System.out.println("Categoria selecionada: " + categoriaSelecionada);
-                GerenciaProduto.this.carregarTabela(categoriaSelecionada);
+                if (categoriaSelecionada == "NENHUM") {
+                    GerenciaProduto.this.carregarTabela();
+                } else {
+                    GerenciaProduto.this.carregarTabela(categoriaSelecionada);
+                }
             }
         });
 
