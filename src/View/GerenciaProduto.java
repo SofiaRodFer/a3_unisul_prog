@@ -34,23 +34,43 @@ public class GerenciaProduto extends javax.swing.JFrame {
             filtro.addItem(categorias.get(i));
         }
         
+        ArrayList<String> colunas = this.produtoDAO.getListaColunas();
+        for (int i = 0; i < colunas.size(); i++) {
+            ordenacao.addItem(colunas.get(i));
+        }
+        
+        ordenacao.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Ação a ser executada quando a seleção muda
+                String colunaSelecionada = (String) ordenacao.getSelectedItem();
+                String categoriaSelecionada = (String) filtro.getSelectedItem();
+                System.out.println("Coluna selecionada: " + colunaSelecionada);
+                if (colunaSelecionada == "NENHUM") {
+                    GerenciaProduto.this.carregarTabela();
+                } else {
+                    GerenciaProduto.this.carregarTabela(categoriaSelecionada, colunaSelecionada);
+                }
+            }
+        });
+        
         // Adicionar ActionListener para detectar mudanças de seleção
         filtro.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Ação a ser executada quando a seleção muda
                 String categoriaSelecionada = (String) filtro.getSelectedItem();
+                String colunaSelecionada = (String) ordenacao.getSelectedItem();
                 System.out.println("Categoria selecionada: " + categoriaSelecionada);
                 if (categoriaSelecionada == "NENHUM") {
                     GerenciaProduto.this.carregarTabela();
                 } else {
-                    GerenciaProduto.this.carregarTabela(categoriaSelecionada);
+                    GerenciaProduto.this.carregarTabela(categoriaSelecionada, colunaSelecionada);
                 }
             }
         });
 
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,6 +87,8 @@ public class GerenciaProduto extends javax.swing.JFrame {
         jTitulo = new javax.swing.JLabel();
         filtro = new javax.swing.JComboBox<>();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        ordenacao = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Estoque de Produtos - Null Alliance");
@@ -124,13 +146,17 @@ public class GerenciaProduto extends javax.swing.JFrame {
 
         jLabel1.setText("Filtrar por:");
 
+        jLabel2.setText("Ordenar por:");
+
+        ordenacao.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "NENHUM" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -138,10 +164,13 @@ public class GerenciaProduto extends javax.swing.JFrame {
                         .addGap(99, 99, 99)
                         .addComponent(b_visualizar)
                         .addGap(18, 18, 18)
-                        .addComponent(b_apagar))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE)
-                        .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(b_apagar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ordenacao, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 748, Short.MAX_VALUE)
+                    .addComponent(jTitulo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -152,12 +181,16 @@ public class GerenciaProduto extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 389, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(b_visualizar)
-                        .addComponent(b_apagar)))
+                        .addComponent(b_apagar)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(ordenacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(filtro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1)))
                 .addGap(25, 25, 25))
         );
 
@@ -240,15 +273,15 @@ public class GerenciaProduto extends javax.swing.JFrame {
         }
     }
     
-    public final void carregarTabela(String categoria) {
+    public final void carregarTabela(String categoria, String ordenacao) {
         try {
             DefaultTableModel modelo = (DefaultTableModel) this.jTableProdutos.getModel();
             modelo.setNumRows(0);
             if (visualizaEmFalta) {
                 this.listaProdutos = this.produtoDAO.getProdutosEmFalta();
             } else {
-                if (categoria != "") {
-                    this.listaProdutos = this.produtoDAO.getListaProdutos(categoria);
+                if (categoria != "" || ordenacao != "" ) {
+                    this.listaProdutos = this.produtoDAO.getListaProdutos(categoria, ordenacao);
                 } else {
                     this.listaProdutos = this.produtoDAO.getListaProdutos();
                 }
@@ -304,8 +337,10 @@ public class GerenciaProduto extends javax.swing.JFrame {
     private javax.swing.JButton b_visualizar;
     private javax.swing.JComboBox<String> filtro;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTableProdutos;
     private javax.swing.JLabel jTitulo;
+    private javax.swing.JComboBox<String> ordenacao;
     // End of variables declaration//GEN-END:variables
 }
