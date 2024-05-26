@@ -2,6 +2,7 @@ package DAO;
 
 import Model.Produto;
 import Result.Resultado;
+import com.mysql.cj.jdbc.DatabaseMetaData;
 import java.util.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -98,6 +99,38 @@ public class ProdutoDAO {
 
         return listaCategorias;
     }
+    
+    public ArrayList<String> getListaColunas() {
+        ArrayList<String> listaColunas = new ArrayList<>();
+        Connection conn = null;
+        ResultSet rs = null;
+
+        try {
+            conn = getConexao();
+            DatabaseMetaData metaData = (DatabaseMetaData) conn.getMetaData();
+            rs = metaData.getColumns(null, null, "produtos", null);
+            while (rs.next()) {
+                String columnName = rs.getString("COLUMN_NAME");
+                listaColunas.add(columnName);
+            }
+
+        } catch (SQLException ex) {
+            System.out.println("Erro ao obter lista de colunas: " + ex.toString());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println("Erro ao fechar recursos: " + e.toString());
+            }
+        }
+
+        return listaColunas;
+    }
 
     public ArrayList getListaProdutos() {
         listaProdutos.clear(); 
@@ -134,19 +167,28 @@ public class ProdutoDAO {
         return listaProdutos;
     }
     
-    public ArrayList<Produto> getListaProdutos(String categoria) {
+    public ArrayList<Produto> getListaProdutos(String categoria, String ordenacao) {
         listaProdutos.clear();
         PreparedStatement stmt = null;
         ResultSet res = null;
 
         try {
-            if (categoria != null && !categoria.equals("")) {
-                String sql = "SELECT * FROM produtos WHERE categoria = ?";
-                stmt = this.getConexao().prepareStatement(sql);
+            StringBuilder sql = new StringBuilder("SELECT * FROM produtos");
+            boolean hasCategoria = categoria != null && !categoria.equals("NENHUM") && !categoria.equals("");
+            boolean hasOrdenacao = ordenacao != null && !ordenacao.equals("NENHUM") && !ordenacao.equals("");
+
+            if (hasCategoria) {
+                sql.append(" WHERE categoria = ?");
+            }
+
+            if (hasOrdenacao) {
+                sql.append(" ORDER BY ").append(ordenacao);
+            }
+
+            stmt = this.getConexao().prepareStatement(sql.toString());
+
+            if (hasCategoria) {
                 stmt.setString(1, categoria);
-            } else {
-                String sql = "SELECT * FROM produtos";
-                stmt = this.getConexao().prepareStatement(sql);
             }
 
             res = stmt.executeQuery();
