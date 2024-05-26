@@ -73,13 +73,17 @@ public class ProdutoDAO {
         }
     }
     
-    public ArrayList<String> getListaCategorias() {
+    public ArrayList<String> getListaCategorias(boolean visualizaEmFalta) {
         ArrayList<String> listaCategorias = new ArrayList<>();
         Statement stmt = null;
-
+        StringBuilder sql = new StringBuilder("SELECT DISTINCT categoria FROM produtos");
+        if (visualizaEmFalta) {
+            sql.append(" WHERE quantidade_estoque = 0");
+        }
+        
         try {
             stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT DISTINCT categoria FROM produtos");
+            ResultSet res = stmt.executeQuery(sql.toString());
             while (res.next()) {
                 String categoria = res.getString("categoria");
                 listaCategorias.add(categoria);
@@ -132,64 +136,14 @@ public class ProdutoDAO {
         return listaColunas;
     }
 
-    public ArrayList getListaProdutos() {
-        listaProdutos.clear(); 
-        Statement stmt = null;
-
-        try {
-            stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM produtos");
-            while (res.next()) {
-                Produto produto = new Produto(
-                    res.getInt("codigo_produto"),
-                    res.getString("nome_produto"),
-                    res.getString("descricao_produto"),
-                    res.getString("categoria"),
-                    res.getInt("quantidade_estoque"),
-                    res.getDouble("preco"),
-                    res.getString("data_cadastro")
-                );
-                listaProdutos.add(produto);
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("Erro ao obter lista: " + ex.toString());
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
-            }
-        }
-
-        return listaProdutos;
-    }
-    
-    public ArrayList<Produto> getListaProdutos(String categoria, String ordenacao) {
+    public ArrayList<Produto> getListaProdutos(String categoria, String ordenacao, String tipoOrdenacao, boolean verEmFalta) {
         listaProdutos.clear();
         PreparedStatement stmt = null;
         ResultSet res = null;
 
         try {
-            StringBuilder sql = new StringBuilder("SELECT * FROM produtos");
-            boolean hasCategoria = categoria != null && !categoria.equals("NENHUM") && !categoria.equals("");
-            boolean hasOrdenacao = ordenacao != null && !ordenacao.equals("NENHUM") && !ordenacao.equals("");
-
-            if (hasCategoria) {
-                sql.append(" WHERE categoria = ?");
-            }
-
-            if (hasOrdenacao) {
-                sql.append(" ORDER BY ").append(ordenacao);
-            }
-
-            stmt = this.getConexao().prepareStatement(sql.toString());
-
-            if (hasCategoria) {
-                stmt.setString(1, categoria);
-            }
+            String sql = construirQueryListagem(categoria, ordenacao, tipoOrdenacao, verEmFalta);
+            stmt = this.getConexao().prepareStatement(sql);
 
             res = stmt.executeQuery();
             while (res.next()) {
@@ -269,41 +223,6 @@ public class ProdutoDAO {
             }
         }
         return valorTotal;
-    }
-    
-    public ArrayList getProdutosEmFalta() {
-        listaProdutos.clear(); 
-        Statement stmt = null;
-
-        try {
-            stmt = this.getConexao().createStatement();
-            ResultSet res = stmt.executeQuery("SELECT * FROM produtos WHERE quantidade_estoque = 0");
-            while (res.next()) {
-                Produto produto = new Produto(
-                    res.getInt("codigo_produto"),
-                    res.getString("nome_produto"),
-                    res.getString("descricao_produto"),
-                    res.getString("categoria"),
-                    res.getInt("quantidade_estoque"),
-                    res.getDouble("preco"),
-                    res.getString("data_cadastro")
-                );
-                listaProdutos.add(produto);
-            }
-
-        } catch (SQLException ex) {
-            System.out.println("Erro ao obter lista: " + ex.toString());
-        } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                System.out.println("Erro ao fechar o PreparedStatement: " + e.toString());
-            }
-        }
-
-        return listaProdutos;
     }
 
     public Resultado inserirProduto(Produto objeto) {
@@ -425,6 +344,31 @@ public class ProdutoDAO {
             JOptionPane.showMessageDialog(null, erro.getMessage());
         }
         return produto;
+    }
+    
+    private String construirQueryListagem(String categoria, String ordenacao, String tipoOrdenacao, boolean verEmFalta) {
+        boolean hasCategoria = categoria != null && !categoria.equals("NENHUM") && !categoria.equals("");
+        boolean hasOrdenacao = ordenacao != null && !ordenacao.equals("NENHUM") && !ordenacao.equals("");
+        boolean hasTipoOrdenacao = tipoOrdenacao != null && !tipoOrdenacao.equals("");
+        StringBuilder sql = new StringBuilder("SELECT * FROM produtos");
+
+        if (hasCategoria || verEmFalta) {
+            sql.append(" WHERE");
+            if (hasCategoria) {
+                sql.append(" categoria = \"").append(categoria).append("\"");
+                if (verEmFalta) {
+                    sql.append(" AND");
+                }
+            }
+            if (verEmFalta) {
+                sql.append(" quantidade_estoque = 0");
+            }
+        }
+        if (hasOrdenacao) {
+            sql.append(" ORDER BY ").append(ordenacao).append(" ").append(tipoOrdenacao);
+        }
+
+        return sql.toString();
     }
 
 }
